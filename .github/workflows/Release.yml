@@ -1,0 +1,73 @@
+name: Release
+
+# 触发器：推送 tag 或手动触发
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: "Build type"
+        required: true
+        default: "debug"
+        type: choice
+        options:
+          - debug
+          - release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 检出代码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 设置 JDK 11 (AGP 7.2.2 + Gradle 7.3.3 兼容)
+      - name: Setup JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      # 缓存 Gradle 依赖，加速构建
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      # CI 环境内存限制为 14GB，降低 Gradle JVM 内存
+      - name: Adjust Gradle memory for CI
+        run: sed -i 's/-Xmx16g/-Xmx4g/' gradle.properties
+
+      # 生成调试用 keystore（build.gradle 读取根目录 keystore/keystore.properties）
+      - name: Generate debug keystore
+        run: |
+          mkdir -p keystore
+          keytool -genkey -v \
+            -keystore keystore/debug.keystore \
+            -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug, O=SmsForwarder-plus, C=CN" \
+            -storepass android -keypass android -noprompt
+          cat > keystore/keystore.properties << 'EOF'
+          keyAlias=androiddebugkey
+          keyPassword=android
+          storeFile=keystore/debug.keystore
+          storePassword=android
+          EOF
+
+      # 编译 Debug APK
+      # Leoric 需要 NDK 编译 JNI，AGP 7.2.2 会自动下载 NDK 21.4 + CMake 3.10.2
+      - name: Build Debug APK
+        run: bash ./gradlew assembleDebug --no-daemon --stacktrace
+
+      # 上传 APK
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmsForwarder-plus-debug
+          path: app/build/outputs/apk/debug/*.apk
+          compression-level: 6

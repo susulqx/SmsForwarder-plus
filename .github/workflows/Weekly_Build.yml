@@ -1,0 +1,78 @@
+name: Weekly Build
+
+# 触发器：每周日 23:00 (北京时间) 自动构建 + 手动触发
+on:
+  schedule:
+    # 每周日国际标准时间 15:00（北京时间 23:00）
+    - cron: '0 15 * * 0'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 检出代码（拉取最近 50 条记录以检查提交）
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+
+      # 检查最近 7 天是否有新提交，没有则跳过构建
+      - name: Check recent commits
+        run: |
+          if [ -z "$(git log --since='7 days ago' --oneline)" ]; then
+            echo "No recent commits in the last 7 days, skipping build."
+            # 设置 step 输出以在后续跳过耗时任务
+            echo "skip_build=true" >> $GITHUB_ENV
+          fi
+
+      # 设置 JDK 11
+      - name: Setup JDK 11
+        if: env.skip_build != 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      # 缓存 Gradle 依赖
+      - name: Setup Gradle
+        if: env.skip_build != 'true'
+        uses: gradle/actions/setup-gradle@v4
+
+      # 调整内存
+      - name: Adjust Gradle memory for CI
+        if: env.skip_build != 'true'
+        run: sed -i 's/-Xmx16g/-Xmx4g/' gradle.properties
+
+      # 生成调试用 keystore（build.gradle 读取根目录 keystore/keystore.properties）
+      - name: Generate debug keystore
+        if: env.skip_build != 'true'
+        run: |
+          mkdir -p keystore
+          keytool -genkey -v \
+            -keystore keystore/debug.keystore \
+            -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug, O=SmsForwarder-plus, C=CN" \
+            -storepass android -keypass android -noprompt
+          cat > keystore/keystore.properties << 'EOF'
+          keyAlias=androiddebugkey
+          keyPassword=android
+          storeFile=keystore/debug.keystore
+          storePassword=android
+          EOF
+
+      # 编译 Debug APK（NDK + CMake 由 AGP 自动下载）
+      - name: Build Debug APK
+        if: env.skip_build != 'true'
+        run: bash ./gradlew assembleDebug --no-daemon --stacktrace
+
+      # 上传 APK
+      - name: Upload Debug APK
+        if: env.skip_build != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmsForwarder-plus-weekly-debug
+          path: app/build/outputs/apk/debug/*.apk
+          compression-level: 6
