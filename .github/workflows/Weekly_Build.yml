@@ -70,6 +70,11 @@ jobs:
         if: env.skip_build != 'true'
         run: bash ./gradlew assembleDebug --no-daemon --stacktrace
 
+      # 定位 APK 输出位置
+      - name: Locate APK
+        if: env.skip_build != 'true'
+        run: find . -name "*.apk" -o -name "*.ap_" 2>/dev/null
+
       # 上传 APK
       - name: Upload Debug APK
         if: env.skip_build != 'true'
