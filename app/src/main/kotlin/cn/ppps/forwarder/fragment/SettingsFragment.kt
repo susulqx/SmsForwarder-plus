@@ -988,7 +988,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
                 MaterialDialog.Builder(requireContext())
                     .title(R.string.leoric_android14_invalid)
                     .content(R.string.leoric_android14_invalid)
-                    .positiveText(R.string.ok)
+                    .positiveText("确定")
                     .cancelable(false)
                     .show()
                 sbEnableLeoric.isChecked = false
@@ -1000,8 +1000,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
                 MaterialDialog.Builder(requireContext())
                     .title(R.string.leoric_conflict_cactus_title)
                     .content(R.string.leoric_conflict_cactus)
-                    .positiveText(R.string.ok)
-                    .negativeText(R.string.cancel)
+                    .positiveText("确定")
+                    .negativeText("取消")
                     .onPositive { _: MaterialDialog, _: DialogAction? ->
                         // 自动关闭 Cactus
                         SettingUtils.enableCactus = false

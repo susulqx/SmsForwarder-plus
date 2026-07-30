@@ -110,13 +110,16 @@ class LeoricProcessImpl : ILeoricProcess {
         val component = ComponentName(context.packageName, serviceName)
         intent.component = component
 
+        val parcel = Parcel.obtain()
+        intent.writeToParcel(parcel, 0)
+
         mServiceData = Parcel.obtain()
         if (Build.VERSION.SDK_INT >= 26) {
-            // Android 8.0+
+            // Android 8.1
             mServiceData!!.writeInterfaceToken("android.app.IActivityManager")
             mServiceData!!.writeStrongBinder(null)
             mServiceData!!.writeInt(1)
-            intent.writeToParcel(mServiceData, 0)
+            intent.writeToParcel(mServiceData!!, 0)
             mServiceData!!.writeString(null)
             mServiceData!!.writeInt(
                 if (context.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.O) 1 else 0
@@ -127,7 +130,7 @@ class LeoricProcessImpl : ILeoricProcess {
             // Android 7.x and below
             mServiceData!!.writeInterfaceToken("android.app.IActivityManager")
             mServiceData!!.writeStrongBinder(null)
-            intent.writeToParcel(mServiceData, 0)
+            intent.writeToParcel(mServiceData!!, 0)
             mServiceData!!.writeString(null)
             if (Build.VERSION.SDK_INT > 22) {
                 mServiceData!!.writeString(context.packageName)
@@ -150,7 +153,7 @@ class LeoricProcessImpl : ILeoricProcess {
                 31 -> 27
                 else -> 34
             }
-            mRemote!!.transact(code, mServiceData, null, 1)
+            mRemote!!.transact(code, mServiceData!!, null, 1)
             true
         } catch (e: RemoteException) {
             e.printStackTrace()
