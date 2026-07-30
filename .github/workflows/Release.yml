@@ -64,6 +64,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SmsForwarder-plus-debug
-<<<<<<< HEAD
           path: build/app/outputs/apk/debug/**/*.apk
           compression-level: 6
