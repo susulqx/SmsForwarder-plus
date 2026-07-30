@@ -88,6 +88,9 @@
         </intent>
     </queries>
 
+    <!-- FreeReflection 要求 minSdk 21，项目为 19；Leoric 仅在 API >= 21 时启用，安全覆盖 -->
+    <uses-sdk tools:overrideLibrary="me.weishu.freereflection" />
+
     <application
         android:name=".App"
         android:configChanges="screenSize|keyboardHidden|orientation|keyboard"
