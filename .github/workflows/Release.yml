@@ -31,12 +31,14 @@ jobs:
       - name: Adjust Gradle memory for CI
         run: sed -i 's/-Xmx16g/-Xmx4g/' gradle.properties
 
-      # 生成调试用 keystore（build.gradle 读取根目录 keystore/keystore.properties）
+      # 生成调试用 keystore
+      # build.gradle 中 rootProject.file 读根目录 keystore/keystore.properties
+      # 但 project.file(storeFile) 在 app 模块中解析为 app/keystore/
       - name: Generate debug keystore
         run: |
-          mkdir -p keystore
+          mkdir -p app/keystore keystore
           keytool -genkey -v \
-            -keystore keystore/debug.keystore \
+            -keystore app/keystore/debug.keystore \
             -alias androiddebugkey \
             -keyalg RSA -keysize 2048 -validity 10000 \
             -dname "CN=Android Debug, O=SmsForwarder-plus, C=CN" \
