@@ -13,7 +13,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import cn.ppps.forwarder.R
-import cn.ppps.forwarder.activity.MainActivity
 import cn.ppps.forwarder.utils.FRONT_CHANNEL_ID
 import cn.ppps.forwarder.utils.FRONT_CHANNEL_NAME
 
@@ -53,7 +52,7 @@ class LeoricService2 : Service() {
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
-            Intent(this, MainActivity::class.java),
+            Intent(),
             flags
         )
 

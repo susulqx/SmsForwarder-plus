@@ -329,8 +329,8 @@ class App : Application(), CactusCallback, Configuration.Provider by Core {
                     addAction(Cactus.CACTUS_BACKGROUND)
                     addAction(Cactus.CACTUS_FOREGROUND)
                 })
-                //设置通知栏点击事件
-                val activityIntent = Intent(this, MainActivity::class.java)
+                //设置通知栏点击事件（无操作）
+                val activityIntent = Intent()
                 val flags = if (Build.VERSION.SDK_INT >= 30) PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
                 val pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, flags)
                 cactus {

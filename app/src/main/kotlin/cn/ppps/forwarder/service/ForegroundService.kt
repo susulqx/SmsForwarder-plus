@@ -21,7 +21,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import cn.ppps.forwarder.App
 import cn.ppps.forwarder.R
-import cn.ppps.forwarder.activity.MainActivity
 import cn.ppps.forwarder.core.Core
 import cn.ppps.forwarder.entity.action.AlarmSetting
 import cn.ppps.forwarder.utils.ACTION_START
@@ -364,7 +363,7 @@ class ForegroundService : Service() {
     }
 
     private fun createNotification(content: String, largeIconResId: Int? = null, showStopButton: Boolean = false): Notification {
-        val notificationIntent = Intent(this, MainActivity::class.java)
+        val notificationIntent = Intent()
         val flags = if (Build.VERSION.SDK_INT >= 30) PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, flags)
 
