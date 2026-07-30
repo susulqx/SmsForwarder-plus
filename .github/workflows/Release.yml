@@ -1,20 +1,11 @@
 name: Release
 
-# 触发器：推送 tag 或手动触发
+# 触发器：推送时自动触发 Debug 构建 + Tag 触发 + 手动触发
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - main
   workflow_dispatch:
-    inputs:
-      build_type:
-        description: "Build type"
-        required: true
-        default: "debug"
-        type: choice
-        options:
-          - debug
-          - release
 
 jobs:
   build:
@@ -35,8 +26,6 @@ jobs:
       # 缓存 Gradle 依赖，加速构建
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       # CI 环境内存限制为 14GB，降低 Gradle JVM 内存
       - name: Adjust Gradle memory for CI
@@ -60,7 +49,7 @@ jobs:
           EOF
 
       # 编译 Debug APK
-      # Leoric 需要 NDK 编译 JNI，AGP 7.2.2 会自动下载 NDK 21.4 + CMake 3.10.2
+      # Leoric 需要 NDK 编译 JNI，AGP 7.2.2 会自动下载 NDK 21.4，CMake 使用 Runner 预装版本
       - name: Build Debug APK
         run: bash ./gradlew assembleDebug --no-daemon --stacktrace
 

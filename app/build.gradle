@@ -103,7 +103,7 @@ android {
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
-            version "3.10.2"
+            // 不锁定 CMake 版本，让 AGP 自动选择 SDK/PATH 中可用版本
         }
     }
 
