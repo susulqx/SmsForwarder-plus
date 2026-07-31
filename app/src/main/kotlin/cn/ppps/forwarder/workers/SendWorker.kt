@@ -96,8 +96,15 @@ class SendWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
                     return@withContext Result.failure(workDataOf("send" to "failed"))
                 }
 
+                val burnAfterRead = inputData.getBoolean(Worker.BURN_AFTER_READ, false)
+
                 val msg = Msg(0, msgInfo.type, msgInfo.from, msgInfo.content, msgInfo.simSlot, msgInfo.simInfo, msgInfo.subId, msgInfo.callType)
-                val msgId = Core.msg.insert(msg)
+                val msgId = if (burnAfterRead) {
+                    Log.i(TAG, "阅后即焚：跳过Room持久化")
+                    0L
+                } else {
+                    Core.msg.insert(msg)
+                }
                 for (rule in ruleListMatched) {
                     val sender = rule.senderList[0]
                     if (isSilentPeriod) {

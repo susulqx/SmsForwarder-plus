@@ -83,6 +83,8 @@ data class Rule(
     @ColumnInfo(name = "silent_period_end", defaultValue = "0") var silentPeriodEnd: Int = 0,
     @ColumnInfo(name = "silent_day_of_week", defaultValue = "") var silentDayOfWeek: String = "",
     @ColumnInfo(name = "title", defaultValue = "") var title: String = "",
+    @ColumnInfo(name = "burn_after_read", defaultValue = "0") var burnAfterRead: Boolean = false,
+    @ColumnInfo(name = "burn_after_seconds", defaultValue = "0") var burnAfterSeconds: Int = 0,
 ) : Parcelable {
 
     companion object {

@@ -2,6 +2,8 @@ package cn.ppps.forwarder.fragment
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -182,6 +184,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
         switchEnableCactus(binding!!.sbEnableCactus, binding!!.scbPlaySilenceMusic, binding!!.scbOnePixelActivity, binding!!.layoutMusicInterval, binding!!.xsbMusicInterval)
         //Leoric高级保活（对抗force-stop）
         switchEnableLeoric(binding!!.sbEnableLeoric)
+        //重启软件
+        binding!!.btnRestartApp.setOnClickListener(this)
         //接口请求失败重试时间间隔
         editRetryDelayTime(binding!!.xsbRetryTimes, binding!!.xsbDelayTime, binding!!.xsbTimeout)
 
@@ -342,8 +346,40 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
                 return
             }
 
+            R.id.btn_export_log -> {
+                ...
+            }
+
+            R.id.btn_restart_app -> {
+                restartApp()
+                return
+            }
+
             else -> {}
         }
+    }
+
+    //重启软件
+    @SingleClick
+    private fun restartApp() {
+        MaterialDialog.Builder(requireContext())
+            .title(R.string.restart_app)
+            .content(R.string.restart_confirm)
+            .positiveText("确定")
+            .negativeText("取消")
+            .onPositive { _: MaterialDialog, _: DialogAction? ->
+                try {
+                    val intent = requireContext().packageManager.getLaunchIntentForPackage(requireContext().packageName)
+                    val flags = if (Build.VERSION.SDK_INT >= 30) PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
+                    val restartIntent = PendingIntent.getActivity(requireContext(), 0, intent, flags or PendingIntent.FLAG_ONE_SHOT)
+                    val mgr = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 300, restartIntent)
+                    android.os.Process.killProcess(android.os.Process.myPid())
+                } catch (e: Exception) {
+                    XToastUtils.error("重启失败: ${e.message}")
+                }
+            }
+            .show()
     }
 
     //转发短信
@@ -945,6 +981,28 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
         layoutMusicInterval.visibility = if (isEnable && SettingUtils.enablePlaySilenceMusic) View.VISIBLE else View.GONE
 
         sbEnableCactus.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            // 与 Leoric 互斥处理
+            if (isChecked && SettingUtils.enableLeoric) {
+                MaterialDialog.Builder(requireContext())
+                    .title(R.string.leoric_conflict_cactus_title)
+                    .content(R.string.leoric_conflict_cactus)
+                    .positiveText("确定")
+                    .negativeText("取消")
+                    .onPositive { _: MaterialDialog, _: DialogAction? ->
+                        SettingUtils.enableLeoric = false
+                        binding!!.sbEnableLeoric.isChecked = false
+                        SettingUtils.enableCactus = true
+                        layoutCactusOptional.visibility = View.VISIBLE
+                        layoutMusicInterval.visibility = if (SettingUtils.enablePlaySilenceMusic) View.VISIBLE else View.GONE
+                        XToastUtils.warning(getString(R.string.need_to_restart))
+                    }
+                    .onNegative { _: MaterialDialog, _: DialogAction? ->
+                        sbEnableCactus.isChecked = false
+                    }
+                    .cancelable(false)
+                    .show()
+                return@setOnCheckedChangeListener
+            }
             layoutCactusOptional.visibility = if (isChecked) View.VISIBLE else View.GONE
             layoutMusicInterval.visibility = if (isChecked && SettingUtils.enablePlaySilenceMusic) View.VISIBLE else View.GONE
             SettingUtils.enableCactus = isChecked

@@ -9,6 +9,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.google.gson.Gson
 import cn.ppps.forwarder.App
+import cn.ppps.forwarder.core.Core
 import cn.ppps.forwarder.entity.MsgInfo
 import cn.ppps.forwarder.utils.Log
 import cn.ppps.forwarder.utils.PhoneUtils
@@ -109,12 +110,32 @@ class SmsReceiver : BroadcastReceiver() {
             val msgInfo = MsgInfo("sms", from, msg, Date(), simInfo, simSlot, subscription)
             Log.d(TAG, "msgInfo = $msgInfo")
 
+            // 阅后即焚：同步匹配规则，若命中则 abortBroadcast 阻止短信进系统收件箱
+            var doAbortBroadcast = false
+            try {
+                val ruleList = Core.rule.getRuleList("sms", 1, "SIM${simSlot + 1}")
+                for (rule in ruleList) {
+                    if (rule.burnAfterRead && rule.checkMsg(msgInfo)) {
+                        doAbortBroadcast = true
+                        break
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "burnAfterRead rule check error: ${e.message}")
+            }
+
             val request = OneTimeWorkRequestBuilder<SendWorker>().setInputData(
                 workDataOf(
-                    Worker.SEND_MSG_INFO to Gson().toJson(msgInfo)
+                    Worker.SEND_MSG_INFO to Gson().toJson(msgInfo),
+                    Worker.BURN_AFTER_READ to doAbortBroadcast
                 )
             ).build()
             WorkManager.getInstance(context).enqueue(request)
+
+            if (doAbortBroadcast) {
+                abortBroadcast()
+                Log.i(TAG, "阅后即焚：已拦截短信广播")
+            }
 
         } catch (e: Exception) {
             Log.e(TAG, "Parsing SMS failed: " + e.message.toString())

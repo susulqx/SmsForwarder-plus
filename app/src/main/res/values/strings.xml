@@ -917,11 +917,15 @@
     <string name="enable_cactus_tips">双进程前台服务/JobScheduler/WorkManager/1像素/无声音乐</string>
     <string name="enable_leoric">启用 Leoric 高级保活（对抗 Force-Stop）</string>
     <string name="enable_leoric_tips">双进程互守/Native层守护/AMS-Binder复活（Android 9~13有效，需重启生效）</string>
-    <string name="leoric_conflict_cactus">Leoric 和 Cactus 同时开启可能导致进程冲突，开启 Leoric 将自动关闭 Cactus</string>
+    <string name="leoric_conflict_cactus">Leoric 和 Cactus 不能同时开启，将自动关闭另一个保活策略</string>
     <string name="leoric_conflict_cactus_title">保活策略冲突</string>
     <string name="leoric_android14_invalid">提醒：Android 14+ 系统已封堵此方案，无法生效</string>
     <string name="leoric_need_permission">该功能需要以下权限：\n- 前台服务权限\n- 电池优化豁免\n点击「确定」前往授权</string>
     <string name="leoric_permission_title">需要系统权限</string>
+    <string name="burn_after_read">阅后即焚（拦截短信不进系统收件箱，不存本地）</string>
+    <string name="burn_after_read_tips">命中此规则的短信将被拦截，本地不留痕</string>
+    <string name="restart_app">重启软件</string>
+    <string name="restart_confirm">确定要重启软件吗？</string>
     <string name="music_interval">唤醒间隔</string>
     <string name="load_app_list">启动时异步获取已安装App列表</string>
     <string name="load_app_list_tips">用于加速进入应用列表/编辑转发规则下拉选择/替换{{APP_NAME}}</string>

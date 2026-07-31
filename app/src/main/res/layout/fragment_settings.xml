@@ -2085,6 +2085,22 @@
 
             </LinearLayout>
 
+            <!-- 重启软件 -->
+            <LinearLayout
+                style="@style/BarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+                    android:id="@+id/btn_restart_app"
+                    style="@style/SuperButton.Red.Icon.Spacing"
+                    android:text="@string/restart_app"
+                    tools:ignore="RtlSymmetry,TextContrastCheck,TouchTargetSizeCheck" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
