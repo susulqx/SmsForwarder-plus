@@ -2095,7 +2095,7 @@
 
                 <com.xuexiang.xui.widget.textview.supertextview.SuperButton
                     android:id="@+id/btn_restart_app"
-                    style="@style/SuperButton.Red.Icon.Spacing"
+                    style="@style/SuperButton.Gray.Icon.Spacing"
                     android:text="@string/restart_app"
                     tools:ignore="RtlSymmetry,TextContrastCheck,TouchTargetSizeCheck" />
 
