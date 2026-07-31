@@ -346,10 +346,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
                 return
             }
 
-            R.id.btn_export_log -> {
-                ...
-            }
-
             R.id.btn_restart_app -> {
                 restartApp()
                 return
