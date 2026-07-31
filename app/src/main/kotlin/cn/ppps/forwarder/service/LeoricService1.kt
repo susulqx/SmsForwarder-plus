@@ -37,12 +37,12 @@ class LeoricService1 : Service() {
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                channelName,
-            val importance = if (SettingUtils.showLeoric1Notification)
-                NotificationManager.IMPORTANCE_LOW else NotificationManager.IMPORTANCE_MIN
-            )
+            val importance = if (SettingUtils.showLeoric1Notification) {
+                NotificationManager.IMPORTANCE_LOW
+            } else {
+                NotificationManager.IMPORTANCE_MIN
+            }
+            val channel = NotificationChannel(channelId, channelName, importance)
             manager.createNotificationChannel(channel)
         }
 
