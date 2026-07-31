@@ -991,6 +991,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
                     .onPositive { _: MaterialDialog, _: DialogAction? ->
                         SettingUtils.enableLeoric = false
                         binding!!.sbEnableLeoric.isChecked = false
+                        binding!!.layoutLeoricNotify1.visibility = View.GONE
+                        binding!!.layoutLeoricNotify2.visibility = View.GONE
                         SettingUtils.enableCactus = true
                         layoutCactusOptional.visibility = View.VISIBLE
                         layoutMusicInterval.visibility = if (SettingUtils.enablePlaySilenceMusic) View.VISIBLE else View.GONE
@@ -1071,6 +1073,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
                         binding!!.layoutCactusOptional.visibility = View.GONE
                         binding!!.layoutMusicInterval.visibility = View.GONE
                         SettingUtils.enableLeoric = true
+                        binding!!.layoutLeoricNotify1.visibility = View.VISIBLE
+                        binding!!.layoutLeoricNotify2.visibility = View.VISIBLE
                         XToastUtils.warning(getString(R.string.need_to_restart))
                     }
                     .onNegative { _: MaterialDialog, _: DialogAction? ->
