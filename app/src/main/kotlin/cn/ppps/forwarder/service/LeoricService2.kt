@@ -59,7 +59,7 @@ class LeoricService2 : Service() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, channelId)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText("Leoric 保活服务运行中")
+                .setContentText("")
                 .setSmallIcon(R.drawable.ic_forwarder)
                 .setContentIntent(pendingIntent)
                 .build()
@@ -67,7 +67,7 @@ class LeoricService2 : Service() {
             @Suppress("DEPRECATION")
             Notification.Builder(this)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText("Leoric 保活服务运行中")
+                .setContentText("")
                 .setSmallIcon(R.drawable.ic_forwarder)
                 .setContentIntent(pendingIntent)
                 .build()
