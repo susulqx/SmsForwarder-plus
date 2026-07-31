@@ -58,10 +58,12 @@ class LeoricService1 : Service() {
             flags
         )
 
+        val notifyText = SettingUtils.leoric1NotificationText
+
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, channelId)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText("")
+                .setContentText(notifyText)
                 .setSmallIcon(R.drawable.ic_forwarder)
                 .setContentIntent(pendingIntent)
                 .build()
@@ -69,7 +71,7 @@ class LeoricService1 : Service() {
             @Suppress("DEPRECATION")
             Notification.Builder(this)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText("")
+                .setContentText(notifyText)
                 .setSmallIcon(R.drawable.ic_forwarder)
                 .setContentIntent(pendingIntent)
                 .build()

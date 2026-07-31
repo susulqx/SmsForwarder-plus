@@ -1436,75 +1436,129 @@
             </LinearLayout>
 
 
-            <!-- Leoric 保活通知（子设置项） -->
+            <!-- Leoric 保活通知1（子设置项） -->
             <LinearLayout
                 android:id="@+id/layout_leoric_notify1"
                 style="@style/BarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:gravity="center_vertical"
                 android:layout_marginStart="20dp"
+                android:orientation="vertical"
                 android:visibility="gone"
                 tools:ignore="RtlSymmetry">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/show_leoric1_notification"
-                        android:textStyle="bold"
-                        tools:ignore="RelativeOverlap" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/show_leoric1_notification"
+                            android:textStyle="bold"
+                            tools:ignore="RelativeOverlap" />
+
+                    </LinearLayout>
+
+                    <com.xuexiang.xui.widget.button.switchbutton.SwitchButton
+                        android:id="@+id/sb_show_leoric1_notification"
+                        style="@style/SwitchButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="TouchTargetSizeCheck" />
 
                 </LinearLayout>
 
-                <com.xuexiang.xui.widget.button.switchbutton.SwitchButton
-                    android:id="@+id/sb_show_leoric1_notification"
-                    style="@style/SwitchButtonStyle"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/layout_leoric1_notification_text"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:ignore="TouchTargetSizeCheck" />
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+                        android:id="@+id/et_leoric1_notification_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/leoric_notification_text_hint"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        app:met_clearButton="true"
+                        tools:ignore="SmallSp,TouchTargetSizeCheck" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Leoric Daemon 进程通知（子设置项） -->
+            <!-- Leoric 保活通知2（子设置项） -->
             <LinearLayout
                 android:id="@+id/layout_leoric_notify2"
                 style="@style/BarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:gravity="center_vertical"
                 android:layout_marginStart="20dp"
+                android:orientation="vertical"
                 android:visibility="gone"
                 tools:ignore="RtlSymmetry">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/show_leoric2_notification"
-                        android:textStyle="bold"
-                        tools:ignore="RelativeOverlap" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/show_leoric2_notification"
+                            android:textStyle="bold"
+                            tools:ignore="RelativeOverlap" />
+
+                    </LinearLayout>
+
+                    <com.xuexiang.xui.widget.button.switchbutton.SwitchButton
+                        android:id="@+id/sb_show_leoric2_notification"
+                        style="@style/SwitchButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="TouchTargetSizeCheck" />
 
                 </LinearLayout>
 
-                <com.xuexiang.xui.widget.button.switchbutton.SwitchButton
-                    android:id="@+id/sb_show_leoric2_notification"
-                    style="@style/SwitchButtonStyle"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/layout_leoric2_notification_text"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:ignore="TouchTargetSizeCheck" />
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+                        android:id="@+id/et_leoric2_notification_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/leoric_notification_text_hint"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        app:met_clearButton="true"
+                        tools:ignore="SmallSp,TouchTargetSizeCheck" />
+
+                </LinearLayout>
 
             </LinearLayout>
             <LinearLayout

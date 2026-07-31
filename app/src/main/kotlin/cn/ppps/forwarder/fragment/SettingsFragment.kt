@@ -1100,20 +1100,50 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun switchShowLeoric1Notification(sb: SwitchButton) {
+        val etText = binding!!.etLeoric1NotificationText
+        val layoutText = binding!!.layoutLeoric1NotificationText
+
         sb.isChecked = SettingUtils.showLeoric1Notification
+        etText.setText(SettingUtils.leoric1NotificationText)
+        layoutText.visibility = if (SettingUtils.showLeoric1Notification) View.VISIBLE else View.GONE
+
         sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             SettingUtils.showLeoric1Notification = isChecked
+            layoutText.visibility = if (isChecked) View.VISIBLE else View.GONE
             XToastUtils.warning(getString(R.string.need_to_restart))
         }
+
+        etText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                SettingUtils.leoric1NotificationText = s?.toString() ?: ""
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun switchShowLeoric2Notification(sb: SwitchButton) {
+        val etText = binding!!.etLeoric2NotificationText
+        val layoutText = binding!!.layoutLeoric2NotificationText
+
         sb.isChecked = SettingUtils.showLeoric2Notification
+        etText.setText(SettingUtils.leoric2NotificationText)
+        layoutText.visibility = if (SettingUtils.showLeoric2Notification) View.VISIBLE else View.GONE
+
         sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             SettingUtils.showLeoric2Notification = isChecked
+            layoutText.visibility = if (isChecked) View.VISIBLE else View.GONE
             XToastUtils.warning(getString(R.string.need_to_restart))
         }
+
+        etText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                SettingUtils.leoric2NotificationText = s?.toString() ?: ""
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     //接口请求失败重试时间间隔

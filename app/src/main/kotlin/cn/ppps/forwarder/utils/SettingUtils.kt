@@ -106,6 +106,9 @@ class SettingUtils private constructor() {
         var showLeoric1Notification: Boolean by SharedPreference(SP_SHOW_LEORIC1_NOTIFICATION, true)
         var showLeoric2Notification: Boolean by SharedPreference(SP_SHOW_LEORIC2_NOTIFICATION, true)
 
+        var leoric1NotificationText: String by SharedPreference(SP_LEORIC1_NOTIFICATION_TEXT, "")
+        var leoric2NotificationText: String by SharedPreference(SP_LEORIC2_NOTIFICATION_TEXT, "")
+
         //请求接口失败重试次数
         var requestRetryTimes: Int by SharedPreference(SP_REQUEST_RETRY_TIMES, 0)
 
