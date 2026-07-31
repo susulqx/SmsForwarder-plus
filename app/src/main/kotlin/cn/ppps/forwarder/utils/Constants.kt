@@ -107,6 +107,10 @@ const val CACTUS_END_DATE = "cactus_end_date"
 
 const val SP_ENABLE_LEORIC = "enable_leoric"
 
+const val SP_SHOW_FOREGROUND_NOTIFICATION = "show_foreground_notification"
+const val SP_SHOW_LEORIC1_NOTIFICATION = "show_leoric1_notification"
+const val SP_SHOW_LEORIC2_NOTIFICATION = "show_leoric2_notification"
+
 //规则相关
 const val STATUS_ON = 1
 const val STATUS_OFF = 0

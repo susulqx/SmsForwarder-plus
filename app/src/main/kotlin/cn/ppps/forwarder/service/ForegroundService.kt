@@ -349,7 +349,8 @@ class ForegroundService : Service() {
     private fun createNotificationChannel() {
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_HIGH
+            val importance = if (SettingUtils.showForegroundNotification)
+                NotificationManager.IMPORTANCE_HIGH else NotificationManager.IMPORTANCE_MIN
             val notificationChannel = NotificationChannel(FRONT_CHANNEL_ID, FRONT_CHANNEL_NAME, importance)
             notificationChannel.description = getString(R.string.notification_content)
             notificationChannel.enableLights(true)

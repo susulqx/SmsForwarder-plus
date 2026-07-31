@@ -924,6 +924,10 @@
     <string name="leoric_permission_title">需要系统权限</string>
     <string name="restart_app">重启</string>
     <string name="restart_confirm">确定要重启软件吗？</string>
+    <string name="show_foreground_notification">显示转发通知</string>
+    <string name="show_foreground_notification_tips">关闭后仍会保持后台运行，但通知栏无提示（需重启）</string>
+    <string name="show_leoric1_notification">显示保活通知1（Persist进程）</string>
+    <string name="show_leoric2_notification">显示保活通知2（Daemon进程）</string>
     <string name="music_interval">唤醒间隔</string>
     <string name="load_app_list">启动时异步获取已安装App列表</string>
     <string name="load_app_list_tips">用于加速进入应用列表/编辑转发规则下拉选择/替换{{APP_NAME}}</string>

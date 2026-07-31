@@ -186,6 +186,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
         switchEnableLeoric(binding!!.sbEnableLeoric)
         //重启软件
         binding!!.btnRestartApp.setOnClickListener(this)
+        //常驻通知开关
+        switchShowForegroundNotification(binding!!.sbShowForegroundNotification)
+        switchShowLeoric1Notification(binding!!.sbShowLeoric1Notification)
+        switchShowLeoric2Notification(binding!!.sbShowLeoric2Notification)
         //接口请求失败重试时间间隔
         editRetryDelayTime(binding!!.xsbRetryTimes, binding!!.xsbDelayTime, binding!!.xsbTimeout)
 
@@ -1035,6 +1039,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
     private fun switchEnableLeoric(sbEnableLeoric: SwitchButton) {
         val isEnable: Boolean = SettingUtils.enableLeoric
         sbEnableLeoric.isChecked = isEnable
+        // Leoric 子设置项初始可见性
+        binding!!.layoutLeoricNotify1.visibility = if (isEnable) View.VISIBLE else View.GONE
+        binding!!.layoutLeoricNotify2.visibility = if (isEnable) View.VISIBLE else View.GONE
 
         sbEnableLeoric.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             // Android 14+ 提示
@@ -1075,6 +1082,36 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
             }
 
             SettingUtils.enableLeoric = isChecked
+            binding!!.layoutLeoricNotify1.visibility = if (isChecked) View.VISIBLE else View.GONE
+            binding!!.layoutLeoricNotify2.visibility = if (isChecked) View.VISIBLE else View.GONE
+            XToastUtils.warning(getString(R.string.need_to_restart))
+        }
+    }
+
+    //常驻通知开关
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun switchShowForegroundNotification(sb: SwitchButton) {
+        sb.isChecked = SettingUtils.showForegroundNotification
+        sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            SettingUtils.showForegroundNotification = isChecked
+            XToastUtils.warning(getString(R.string.need_to_restart))
+        }
+    }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun switchShowLeoric1Notification(sb: SwitchButton) {
+        sb.isChecked = SettingUtils.showLeoric1Notification
+        sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            SettingUtils.showLeoric1Notification = isChecked
+            XToastUtils.warning(getString(R.string.need_to_restart))
+        }
+    }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun switchShowLeoric2Notification(sb: SwitchButton) {
+        sb.isChecked = SettingUtils.showLeoric2Notification
+        sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            SettingUtils.showLeoric2Notification = isChecked
             XToastUtils.warning(getString(R.string.need_to_restart))
         }
     }

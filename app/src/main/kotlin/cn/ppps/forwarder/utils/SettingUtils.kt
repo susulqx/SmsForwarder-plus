@@ -101,6 +101,11 @@ class SettingUtils private constructor() {
         //是否启用 Leoric 高级保活（对抗 force-stop）
         var enableLeoric: Boolean by SharedPreference(SP_ENABLE_LEORIC, false)
 
+        //是否显示常驻通知
+        var showForegroundNotification: Boolean by SharedPreference(SP_SHOW_FOREGROUND_NOTIFICATION, true)
+        var showLeoric1Notification: Boolean by SharedPreference(SP_SHOW_LEORIC1_NOTIFICATION, true)
+        var showLeoric2Notification: Boolean by SharedPreference(SP_SHOW_LEORIC2_NOTIFICATION, true)
+
         //请求接口失败重试次数
         var requestRetryTimes: Int by SharedPreference(SP_REQUEST_RETRY_TIMES, 0)
 

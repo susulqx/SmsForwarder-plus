@@ -15,6 +15,7 @@ import android.os.IBinder
 import cn.ppps.forwarder.R
 import cn.ppps.forwarder.utils.FRONT_CHANNEL_ID
 import cn.ppps.forwarder.utils.FRONT_CHANNEL_NAME
+import cn.ppps.forwarder.utils.SettingUtils
 
 class LeoricService2 : Service() {
 
@@ -39,7 +40,8 @@ class LeoricService2 : Service() {
             val channel = NotificationChannel(
                 channelId,
                 channelName,
-                NotificationManager.IMPORTANCE_LOW
+            val importance = if (SettingUtils.showLeoric2Notification)
+                NotificationManager.IMPORTANCE_LOW else NotificationManager.IMPORTANCE_MIN
             )
             manager.createNotificationChannel(channel)
         }
