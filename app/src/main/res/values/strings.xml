@@ -922,9 +922,7 @@
     <string name="leoric_android14_invalid">提醒：Android 14+ 系统已封堵此方案，无法生效</string>
     <string name="leoric_need_permission">该功能需要以下权限：\n- 前台服务权限\n- 电池优化豁免\n点击「确定」前往授权</string>
     <string name="leoric_permission_title">需要系统权限</string>
-    <string name="burn_after_read">阅后即焚（拦截短信不进系统收件箱，不存本地）</string>
-    <string name="burn_after_read_tips">命中此规则的短信将被拦截，本地不留痕</string>
-    <string name="restart_app">重启软件</string>
+    <string name="restart_app">重启</string>
     <string name="restart_confirm">确定要重启软件吗？</string>
     <string name="music_interval">唤醒间隔</string>
     <string name="load_app_list">启动时异步获取已安装App列表</string>

@@ -28,7 +28,7 @@ import cn.ppps.forwarder.utils.TAG_LIST
 @Database(
     entities = [Frpc::class, Msg::class, Logs::class, Rule::class, Sender::class, Task::class],
     views = [LogsDetail::class],
-    version = 22,
+    version = 21,
     exportSchema = false
 )
 @TypeConverters(ConvertersDate::class)
@@ -112,7 +112,6 @@ custom_domains = smsf.demo.com
                     MIGRATION_18_19,
                     MIGRATION_19_20,
                     MIGRATION_20_21,
-                    MIGRATION_21_22,
                 )
 
             /*if (BuildConfig.DEBUG) {
@@ -466,14 +465,6 @@ CREATE TABLE "Task" (
         private val MIGRATION_20_21 = object : Migration(20, 21) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("Alter table rule add column title TEXT NOT NULL DEFAULT '' ")
-            }
-        }
-
-        //转发规则增加阅后即焚
-        private val MIGRATION_21_22 = object : Migration(21, 22) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("Alter table rule add column burn_after_read INTEGER NOT NULL DEFAULT 0 ")
-                database.execSQL("Alter table rule add column burn_after_seconds INTEGER NOT NULL DEFAULT 0 ")
             }
         }
 

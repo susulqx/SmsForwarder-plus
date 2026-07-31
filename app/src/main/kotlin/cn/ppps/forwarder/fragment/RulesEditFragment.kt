@@ -234,7 +234,6 @@ class RulesEditFragment : BaseFragment<FragmentRulesEditBinding?>(), View.OnClic
         binding!!.sbStatus.setOnCheckedChangeListener(this)
         binding!!.sbSmsTemplate.setOnCheckedChangeListener(this)
         binding!!.sbRegexReplace.setOnCheckedChangeListener(this)
-        binding!!.sbBurnAfterRead.setOnCheckedChangeListener(this)
 
         binding!!.rgFiled.setOnCheckedChangeListener { _: RadioGroup?, checkedId: Int ->
             if (ruleType == "app" && appListSpinnerList.isNotEmpty()) {
@@ -579,7 +578,6 @@ class RulesEditFragment : BaseFragment<FragmentRulesEditBinding?>(), View.OnClic
                 binding!!.sbRegexReplace.isChecked = !TextUtils.isEmpty(rule.regexReplace.trim())
                 binding!!.etRegexReplace.setText(rule.regexReplace.trim())
                 binding!!.sbStatus.isChecked = rule.statusChecked
-                binding!!.sbBurnAfterRead.isChecked = rule.burnAfterRead
                 silentPeriodStart = rule.silentPeriodStart
                 silentPeriodEnd = rule.silentPeriodEnd
                 //初始化发送通道下拉框
@@ -678,7 +676,6 @@ class RulesEditFragment : BaseFragment<FragmentRulesEditBinding?>(), View.OnClic
             else -> CHECK_SIM_SLOT_ALL
         }
         val status = if (binding!!.sbStatus.isChecked) STATUS_ON else STATUS_OFF
-        val burnAfterRead = binding!!.sbBurnAfterRead.isChecked
 
         val map = mapOf(
             Calendar.SUNDAY to binding!!.sun,
@@ -711,9 +708,7 @@ class RulesEditFragment : BaseFragment<FragmentRulesEditBinding?>(), View.OnClic
             silentPeriodStart,
             silentPeriodEnd,
             silentDayOfWeek,
-            ruleTitle,
-            burnAfterRead,
-            0 // burnAfterSeconds default 0 = immediately
+            ruleTitle
         )
     }
 

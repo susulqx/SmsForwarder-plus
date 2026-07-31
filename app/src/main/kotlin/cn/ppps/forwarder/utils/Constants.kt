@@ -6,7 +6,6 @@ object Worker {
     const val RULE = "rule"
     const val SENDER_INDEX = "sender_index"
     const val MSG_ID = "msg_id"
-    const val BURN_AFTER_READ = "burn_after_read"
 }
 
 object TaskWorker {
