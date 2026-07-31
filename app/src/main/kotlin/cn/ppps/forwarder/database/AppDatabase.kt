@@ -462,6 +462,13 @@ CREATE TABLE "Task" (
             }
         }
 
+        //转发规则增加自定义名称
+        private val MIGRATION_20_21 = object : Migration(20, 21) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("Alter table rule add column title TEXT NOT NULL DEFAULT '' ")
+            }
+        }
+
         //转发规则增加阅后即焚
         private val MIGRATION_21_22 = object : Migration(21, 22) {
             override fun migrate(database: SupportSQLiteDatabase) {
