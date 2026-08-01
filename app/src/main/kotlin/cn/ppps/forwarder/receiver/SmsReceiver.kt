@@ -25,6 +25,9 @@ import cn.ppps.forwarder.utils.SmsCommandUtils
 import cn.ppps.forwarder.utils.Worker
 import cn.ppps.forwarder.workers.SendWorker
 import com.xuexiang.xrouter.utils.TextUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
@@ -120,7 +123,7 @@ class SmsReceiver : BroadcastReceiver() {
 
             // goAsync 延长广播生命周期，在省电模式/Doze 下抢在冻结前完成转发
             val pendingResult = goAsync()
-            Thread {
+            GlobalScope.launch(Dispatchers.IO) {
                 var forwarded = false
                 try {
                     forwarded = doSyncForwarding(msgInfo)
@@ -139,7 +142,7 @@ class SmsReceiver : BroadcastReceiver() {
                     }
                     pendingResult.finish()
                 }
-            }.start()
+            }
 
         } catch (e: Exception) {
             Log.e(TAG, "Parsing SMS failed: " + e.message.toString())
@@ -227,7 +230,7 @@ class SmsReceiver : BroadcastReceiver() {
      * 利用 goAsync() 延长的约10秒窗口，省电/Doze 模式下抢在系统冻结前发出
      * @return true 表示全部转发成功，false 表示需要 WorkManager 兜底
      */
-    private fun doSyncForwarding(msgInfo: MsgInfo): Boolean {
+    private suspend fun doSyncForwarding(msgInfo: MsgInfo): Boolean {
         try {
             val simSlot = "SIM" + (msgInfo.simSlot + 1)
             val ruleList = Core.rule.getRuleList(msgInfo.type, 1, simSlot)
