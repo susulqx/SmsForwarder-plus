@@ -4,20 +4,29 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.google.gson.Gson
 import cn.ppps.forwarder.App
+import cn.ppps.forwarder.core.Core
+import cn.ppps.forwarder.database.entity.Logs
+import cn.ppps.forwarder.database.entity.Msg
+import cn.ppps.forwarder.database.entity.Rule
 import cn.ppps.forwarder.entity.MsgInfo
 import cn.ppps.forwarder.utils.Log
 import cn.ppps.forwarder.utils.PhoneUtils
+import cn.ppps.forwarder.utils.SendUtils
 import cn.ppps.forwarder.utils.SettingUtils
 import cn.ppps.forwarder.utils.SmsCommandUtils
 import cn.ppps.forwarder.utils.Worker
 import cn.ppps.forwarder.workers.SendWorker
 import com.xuexiang.xrouter.utils.TextUtils
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 //短信广播
 @Suppress("PrivatePropertyName", "UNUSED_PARAMETER")
@@ -109,12 +118,28 @@ class SmsReceiver : BroadcastReceiver() {
             val msgInfo = MsgInfo("sms", from, msg, Date(), simInfo, simSlot, subscription)
             Log.d(TAG, "msgInfo = $msgInfo")
 
-            val request = OneTimeWorkRequestBuilder<SendWorker>().setInputData(
-                workDataOf(
-                    Worker.SEND_MSG_INFO to Gson().toJson(msgInfo)
-                )
-            ).build()
-            WorkManager.getInstance(context).enqueue(request)
+            // goAsync 延长广播生命周期，在省电模式/Doze 下抢在冻结前完成转发
+            val pendingResult = goAsync()
+            Thread {
+                var forwarded = false
+                try {
+                    forwarded = doSyncForwarding(msgInfo)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Sync forwarding failed: ${e.message}")
+                } finally {
+                    // 同步转发失败/无匹配规则时，交给 WorkManager 兜底重试
+                    if (!forwarded) {
+                        val request = OneTimeWorkRequestBuilder<SendWorker>()
+                            .setInputData(workDataOf(Worker.SEND_MSG_INFO to Gson().toJson(msgInfo)))
+                            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+                            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                            .build()
+                        WorkManager.getInstance(context).enqueue(request)
+                        Log.d(TAG, "Fallback to WorkManager retry")
+                    }
+                    pendingResult.finish()
+                }
+            }.start()
 
         } catch (e: Exception) {
             Log.e(TAG, "Parsing SMS failed: " + e.message.toString())
@@ -194,6 +219,38 @@ class SmsReceiver : BroadcastReceiver() {
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, "handleMmsData: $e")
+        }
+    }
+
+    /**
+     * 在广播生命周期内同步完成规则匹配+转发
+     * 利用 goAsync() 延长的约10秒窗口，省电/Doze 模式下抢在系统冻结前发出
+     * @return true 表示全部转发成功，false 表示需要 WorkManager 兜底
+     */
+    private fun doSyncForwarding(msgInfo: MsgInfo): Boolean {
+        try {
+            val simSlot = "SIM" + (msgInfo.simSlot + 1)
+            val ruleList = Core.rule.getRuleList(msgInfo.type, 1, simSlot)
+            if (ruleList.isEmpty()) return false
+
+            val matched = ruleList.filter { it.checkMsg(msgInfo) }
+            if (matched.isEmpty()) return false
+
+            val msg = Msg(0, msgInfo.type, msgInfo.from, msgInfo.content, msgInfo.simSlot, msgInfo.simInfo, msgInfo.subId, msgInfo.callType)
+            val msgId = Core.msg.insert(msg)
+
+            for (rule in matched) {
+                val sender = rule.senderList[0]
+                val log = Logs(0, msgInfo.type, msgId, rule.id, sender.id)
+                val logId = Core.logs.insert(log)
+                SendUtils.sendMsgSender(msgInfo, rule, 0, logId, msgId)
+            }
+
+            Log.i(TAG, "Sync forwarding completed: ${matched.size} rules matched")
+            return true
+        } catch (e: Exception) {
+            Log.e(TAG, "doSyncForwarding error: ${e.message}")
+            return false
         }
     }
 
