@@ -538,7 +538,6 @@
     <string name="interval">间隔</string>
     <string name="interval_label">递增间隔</string>
     <string name="timeout_label">单次超时</string>
-    <string name="seconds">秒</string>
     <string name="seconds_n">%d秒</string>
     <string name="retry_label">最多重试</string>
     <string name="test_sender_sms">【%s】恭喜您，该发送通道测试成功，请继续添加转发规则！</string>
@@ -589,8 +588,6 @@
     <string name="toast_granted_part">获取部分权限成功，但部分权限未正常授予，APP部分功能可能受限！</string>
     <string name="toast_denied_never">被永久拒绝授权，前往系统设置手动授予权限？</string>
     <string name="toast_denied">获取必需的权限失败，APP功能可能受限！</string>
-    <string name="play_silence_music">后台播放无声音乐</string>
-    <string name="one_pixel_activity">1像素透明Activity</string>
     <string name="optional">可选</string>
     <string name="TelegramChatIdTips">请按照wiki中的步骤获取</string>
     <string name="TelegramMessageThreadIdTips">可选，请按照wiki中的步骤获取</string>
@@ -912,13 +909,8 @@
     <string name="pure_task_mode_tips">启动APP时直接进入自动任务</string>
     <string name="debug_mode">开启调试模式</string>
     <string name="debug_mode_tips">将Log.*写入文件，以便排查问题；可导出到下载目录</string>
-    <string name="optional_components">可选组件：</string>
-    <string name="enable_cactus">启用 Cactus 增强保活措施（会增加耗电）</string>
-    <string name="enable_cactus_tips">双进程前台服务/JobScheduler/WorkManager/1像素/无声音乐</string>
     <string name="enable_leoric">启用 Leoric 高级保活（对抗 Force-Stop）</string>
     <string name="enable_leoric_tips">双进程互守/Native层守护/AMS-Binder复活（Android 9~13有效，需重启生效）</string>
-    <string name="leoric_conflict_cactus">Leoric 和 Cactus 不能同时开启，将自动关闭另一个保活策略</string>
-    <string name="leoric_conflict_cactus_title">保活策略冲突</string>
     <string name="leoric_android14_invalid">提醒：Android 14+ 系统已封堵此方案，无法生效</string>
     <string name="leoric_need_permission">该功能需要以下权限：\n- 前台服务权限\n- 电池优化豁免\n点击「确定」前往授权</string>
     <string name="leoric_permission_title">需要系统权限</string>
@@ -932,11 +924,11 @@
     <string name="enable_tcp_keepalive">TCP 长连接保活</string>
     <string name="enable_tcp_keepalive_tips">保持一个到百度的 TCP 连接，防止省电模式冻结网络栈</string>
     <string name="tcp_keepalive_interval">TCP 重连检查间隔（秒）</string>
+    <string name="seconds">秒</string>
     <string name="enable_http_heartbeat">HTTP 心跳保活</string>
     <string name="enable_http_heartbeat_tips">定期发 HTTP 请求保持网络活跃，防止 Doze 挂起</string>
     <string name="http_heartbeat_interval">HTTP 心跳间隔（秒）</string>
     <string name="keepalive_network">网络保活</string>
-    <string name="music_interval">唤醒间隔</string>
     <string name="load_app_list">启动时异步获取已安装App列表</string>
     <string name="load_app_list_tips">用于加速进入应用列表/编辑转发规则下拉选择/替换{{APP_NAME}}</string>
     <string name="load_app_list_toast">开启异步获取已安装App列表时必选一个类型</string>

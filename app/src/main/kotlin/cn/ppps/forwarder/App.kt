@@ -30,7 +30,6 @@ import cn.ppps.forwarder.leoric.Leoric
 import cn.ppps.forwarder.leoric.LeoricConfigs
 import cn.ppps.forwarder.receiver.BatteryReceiver
 import cn.ppps.forwarder.receiver.BluetoothReceiver
-import cn.ppps.forwarder.receiver.CactusReceiver
 import cn.ppps.forwarder.receiver.LockScreenReceiver
 import cn.ppps.forwarder.receiver.NetworkChangeReceiver
 import cn.ppps.forwarder.service.BluetoothScanService
@@ -41,7 +40,6 @@ import cn.ppps.forwarder.service.LeoricService2
 import cn.ppps.forwarder.service.LocationService
 import cn.ppps.forwarder.utils.ACTION_START
 import cn.ppps.forwarder.utils.AppInfo
-import cn.ppps.forwarder.utils.CactusSave
 import cn.ppps.forwarder.utils.FRONT_CHANNEL_ID
 import cn.ppps.forwarder.utils.FRONT_CHANNEL_NAME
 import cn.ppps.forwarder.utils.FRONT_NOTIFY_ID
@@ -56,9 +54,6 @@ import cn.ppps.forwarder.utils.sdkinit.UMengInit
 import cn.ppps.forwarder.utils.sdkinit.XBasicLibInit
 import cn.ppps.forwarder.utils.sdkinit.XUpdateInit
 import cn.ppps.forwarder.utils.tinker.TinkerLoadLibrary
-import com.gyf.cactus.Cactus
-import com.gyf.cactus.callback.CactusCallback
-import com.gyf.cactus.ext.cactus
 import com.hjq.language.MultiLanguages
 import com.hjq.language.OnLanguageListener
 import com.king.location.LocationClient
@@ -81,7 +76,7 @@ import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
 @Suppress("DEPRECATION")
-class App : Application(), CactusCallback, Configuration.Provider by Core {
+class App : Application(), Configuration.Provider by Core {
 
     val applicationScope = CoroutineScope(SupervisorJob())
     val database by lazy { AppDatabase.getInstance(this) }
@@ -128,13 +123,6 @@ class App : Application(), CactusCallback, Configuration.Provider by Core {
          * @return 当前app是否是调试开发模式
          */
         var isDebug: Boolean = BuildConfig.DEBUG
-
-        //Cactus相关
-        val mEndDate = MutableLiveData<String>() //结束时间
-        val mLastTimer = MutableLiveData<String>() //上次存活时间
-        val mTimer = MutableLiveData<String>() //存活时间
-        val mStatus = MutableLiveData<Boolean>().apply { value = true } //运行状态
-        var mDisposable: Disposable? = null
 
         //Location相关
         val LocationClient by lazy { LocationClient(context) }
@@ -319,56 +307,6 @@ class App : Application(), CactusCallback, Configuration.Provider by Core {
                 }
             }
 
-            //Cactus 集成双进程前台服务，JobScheduler，onePix(一像素)，WorkManager，无声音乐
-            // 与 Leoric 互斥：若 Leoric 已启用，跳过 Cactus（已在 attachBaseContext 初始化 Leoric）
-            if (SettingUtils.enableCactus && !SettingUtils.enableLeoric) {
-                //注册广播监听器
-                registerReceiver(CactusReceiver(), IntentFilter().apply {
-                    addAction(Cactus.CACTUS_WORK)
-                    addAction(Cactus.CACTUS_STOP)
-                    addAction(Cactus.CACTUS_BACKGROUND)
-                    addAction(Cactus.CACTUS_FOREGROUND)
-                })
-                //设置通知栏点击事件（无操作）
-                val activityIntent = Intent()
-                val flags = if (Build.VERSION.SDK_INT >= 30) PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
-                val pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, flags)
-                cactus {
-                    setServiceId(FRONT_NOTIFY_ID) //服务Id
-                    setChannelId(FRONT_CHANNEL_ID) //渠道Id
-                    setChannelName(FRONT_CHANNEL_NAME) //渠道名
-                    setTitle(getString(R.string.app_name))
-                    setContent(SettingUtils.notifyContent)
-                    setSmallIcon(R.drawable.ic_forwarder)
-                    setLargeIcon(R.mipmap.ic_launcher)
-                    setPendingIntent(pendingIntent)
-                    //无声音乐
-                    if (SettingUtils.enablePlaySilenceMusic) {
-                        setMusicEnabled(true)
-                        setBackgroundMusicEnabled(true)
-                        setMusicId(R.raw.silence)
-                        //设置音乐间隔时间，时间间隔越长，越省电
-                        setMusicInterval(SettingUtils.musicInterval.toLong())
-                        isDebug(true)
-                    }
-                    //是否可以使用一像素，默认可以使用，只有在android p以下可以使用
-                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P && SettingUtils.enableOnePixelActivity) {
-                        setOnePixEnabled(true)
-                    }
-                    //崩溃是否可以重启用户界面
-                    setCrashRestartUIEnabled(true)
-                    addCallback({
-                        Log.d(TAG, "Cactus保活：onStop回调")
-                    }) {
-                        Log.d(TAG, "Cactus保活：doWork回调")
-                    }
-                    //切后台切换回调
-                    addBackgroundCallback {
-                        Log.d(TAG, if (it) "SmsForwarder 切换到后台运行" else "SmsForwarder 切换到前台运行")
-                    }
-                }
-            }
-
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, "onCreate: $e")
@@ -414,41 +352,6 @@ class App : Application(), CactusCallback, Configuration.Provider by Core {
             }
         })
         switchLanguage(MultiLanguages.getAppLanguage(this))
-    }
-
-    @SuppressLint("CheckResult")
-    override fun doWork(times: Int) {
-        Log.d(TAG, "doWork:$times")
-        mStatus.postValue(true)
-        val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-        dateFormat.timeZone = TimeZone.getTimeZone("GMT+00:00")
-        var oldTimer = CactusSave.timer
-        if (times == 1) {
-            CactusSave.lastTimer = oldTimer
-            CactusSave.endDate = CactusSave.date
-            oldTimer = 0L
-        }
-        mLastTimer.postValue(dateFormat.format(Date(CactusSave.lastTimer * 1000)))
-        mEndDate.postValue(CactusSave.endDate)
-        mDisposable = Observable.interval(1, TimeUnit.SECONDS).map {
-            oldTimer + it
-        }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe { aLong ->
-            CactusSave.timer = aLong
-            CactusSave.date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).run {
-                format(Date())
-            }
-            mTimer.value = dateFormat.format(Date(aLong * 1000))
-        }
-    }
-
-    override fun onStop() {
-        Log.d(TAG, "onStop")
-        mStatus.postValue(false)
-        mDisposable?.apply {
-            if (!isDisposed) {
-                dispose()
-            }
-        }
     }
 
     //多语言切换时枚举常量自动切换语言

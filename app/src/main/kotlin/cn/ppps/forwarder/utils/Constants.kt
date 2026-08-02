@@ -99,12 +99,7 @@ const val SP_BLUETOOTH = "enable_bluetooth"
 const val SP_BLUETOOTH_SCAN_INTERVAL = "bluetooth_scan_interval"
 const val SP_BLUETOOTH_IGNORE_ANONYMOUS = "bluetooth_ignore_anonymous"
 
-const val SP_ENABLE_CACTUS = "enable_cactus"
-const val CACTUS_TIMER = "cactus_timer"
-const val CACTUS_LAST_TIMER = "cactus_last_timer"
-const val CACTUS_DATE = "cactus_date"
-const val CACTUS_END_DATE = "cactus_end_date"
-
+//保活相关
 const val SP_ENABLE_LEORIC = "enable_leoric"
 
 const val SP_SHOW_FOREGROUND_NOTIFICATION = "show_foreground_notification"

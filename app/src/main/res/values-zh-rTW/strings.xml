@@ -508,7 +508,6 @@
     <string name="interval">間隔</string>
     <string name="interval_label">遞增間隔</string>
     <string name="timeout_label">單次超時</string>
-    <string name="seconds">秒</string>
     <string name="seconds_n">%d秒</string>
     <string name="retry_label">最多重試</string>
     <string name="test_sender_sms">【%s】恭喜您，該發送通道測試成功，請繼續添加轉發規則！</string>
@@ -559,8 +558,6 @@
     <string name="toast_granted_part">獲取部分權限成功，但部分權限未正常授予，應用部分功能可能受限！</string>
     <string name="toast_denied_never">被永久拒絕授權，前往系統設定手動授權權限？</string>
     <string name="toast_denied">獲取必需的權限失敗，應用功能可能受限！</string>
-    <string name="play_silence_music">後台播放無聲音樂</string>
-    <string name="one_pixel_activity">1像素透明Activity</string>
     <string name="optional">可選</string>
     <string name="TelegramChatIdTips">請按照wiki中的步驟獲取</string>
     <string name="TelegramMessageThreadIdTips">可選，請按照wiki中的步驟獲取</string>
@@ -882,17 +879,11 @@
     <string name="pure_task_mode_tips">啟動APP時直接進入自動任務</string>
     <string name="debug_mode">开啟調試模式</string>
     <string name="debug_mode_tips">將 Log.* 寫入檔案，以便排查問題；可匯出至下載目錄</string>
-    <string name="optional_components">可選組件：</string>
-    <string name="enable_cactus">啟用 Cactus 增強保活措施（會增加耗電）</string>
-    <string name="enable_cactus_tips">雙進程前��服務/JobScheduler/WorkManager/1像素/無聲音樂</string>
     <string name="enable_leoric">啟用 Leoric 高級保活（對抗 Force-Stop）</string>
     <string name="enable_leoric_tips">雙進程互守/Native層守護/AMS-Binder復活（Android 9~13有效，需重啟生效）</string>
-    <string name="leoric_conflict_cactus">Leoric 和 Cactus 同時開啟可能導致進程衝突，開啟 Leoric 將自動關閉 Cactus</string>
-    <string name="leoric_conflict_cactus_title">保活策略衝突</string>
     <string name="leoric_android14_invalid">提醒：Android 14+ 系統已封堵此方案，無法生效</string>
     <string name="leoric_need_permission">該功能需要以下權限：\n- 前台服務權限\n- 電池優化豁免\n點擊「確定」前往授權</string>
     <string name="leoric_permission_title">需要系統權限</string>
-    <string name="music_interval">喚醒間隔</string>
     <string name="load_app_list">啟動時異步獲取已安裝App列表</string>
     <string name="load_app_list_tips">用於加速進入應用列表/編輯轉發規則下拉選擇/替換{{APP_NAME}}</string>
     <string name="load_app_list_toast">開啟異步獲取已安裝App列表時必選一個類型</string>

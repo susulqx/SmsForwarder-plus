@@ -180,8 +180,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
         batterySetting(binding!!.layoutBatterySetting, binding!!.sbBatterySetting)
         //不在最近任务列表中显示
         switchExcludeFromRecents(binding!!.layoutExcludeFromRecents, binding!!.sbExcludeFromRecents)
-        //Cactus增强保活措施
-        switchEnableCactus(binding!!.sbEnableCactus, binding!!.scbPlaySilenceMusic, binding!!.scbOnePixelActivity, binding!!.layoutMusicInterval, binding!!.xsbMusicInterval)
         //Leoric高级保活（对抗force-stop）
         switchEnableLeoric(binding!!.sbEnableLeoric)
         //重启软件
@@ -974,71 +972,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
         }
     }
 
-    //Cactus增强保活措施
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private fun switchEnableCactus(sbEnableCactus: SwitchButton, scbPlaySilenceMusic: SmoothCheckBox, scbOnePixelActivity: SmoothCheckBox, layoutMusicInterval: LinearLayout, xsbMusicInterval: XSeekBar) {
-        val layoutCactusOptional: LinearLayout = binding!!.layoutCactusOptional
-        val isEnable: Boolean = SettingUtils.enableCactus
-        sbEnableCactus.isChecked = isEnable
-        layoutCactusOptional.visibility = if (isEnable) View.VISIBLE else View.GONE
-        layoutMusicInterval.visibility = if (isEnable && SettingUtils.enablePlaySilenceMusic) View.VISIBLE else View.GONE
-
-        sbEnableCactus.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // 与 Leoric 互斥处理
-            if (isChecked && SettingUtils.enableLeoric) {
-                MaterialDialog.Builder(requireContext())
-                    .title(R.string.leoric_conflict_cactus_title)
-                    .content(R.string.leoric_conflict_cactus)
-                    .positiveText("确定")
-                    .negativeText("取消")
-                    .onPositive { _: MaterialDialog, _: DialogAction? ->
-                        SettingUtils.enableLeoric = false
-                        binding!!.sbEnableLeoric.isChecked = false
-                        binding!!.layoutLeoricNotify1.visibility = View.GONE
-                        binding!!.layoutLeoricNotify2.visibility = View.GONE
-                        SettingUtils.enableCactus = true
-                        layoutCactusOptional.visibility = View.VISIBLE
-                        layoutMusicInterval.visibility = if (SettingUtils.enablePlaySilenceMusic) View.VISIBLE else View.GONE
-                        XToastUtils.warning(getString(R.string.need_to_restart))
-                    }
-                    .onNegative { _: MaterialDialog, _: DialogAction? ->
-                        sbEnableCactus.isChecked = false
-                    }
-                    .cancelable(false)
-                    .show()
-                return@setOnCheckedChangeListener
-            }
-            layoutCactusOptional.visibility = if (isChecked) View.VISIBLE else View.GONE
-            layoutMusicInterval.visibility = if (isChecked && SettingUtils.enablePlaySilenceMusic) View.VISIBLE else View.GONE
-            SettingUtils.enableCactus = isChecked
-            XToastUtils.warning(getString(R.string.need_to_restart))
-        }
-
-        scbPlaySilenceMusic.isChecked = SettingUtils.enablePlaySilenceMusic
-        scbPlaySilenceMusic.setOnCheckedChangeListener { _: SmoothCheckBox, isChecked: Boolean ->
-            SettingUtils.enablePlaySilenceMusic = isChecked
-            layoutMusicInterval.visibility = if (isChecked) View.VISIBLE else View.GONE
-            XToastUtils.warning(getString(R.string.need_to_restart))
-        }
-
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            binding!!.layoutOnePixelActivity.visibility = View.VISIBLE
-        }
-        scbOnePixelActivity.isChecked = SettingUtils.enableOnePixelActivity
-        scbOnePixelActivity.setOnCheckedChangeListener { _: SmoothCheckBox, isChecked: Boolean ->
-            SettingUtils.enableOnePixelActivity = isChecked
-            XToastUtils.warning(getString(R.string.need_to_restart))
-        }
-
-        xsbMusicInterval.setDefaultValue(SettingUtils.musicInterval)
-        xsbMusicInterval.setOnSeekBarListener { _: XSeekBar?, newValue: Int ->
-            if (newValue != SettingUtils.musicInterval) {
-                SettingUtils.musicInterval = newValue
-                XToastUtils.warning(getString(R.string.need_to_restart))
-            }
-        }
-    }
-
     //Leoric高级保活措施（对抗force-stop）
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun switchEnableLeoric(sbEnableLeoric: SwitchButton) {
@@ -1058,33 +991,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
                     .cancelable(false)
                     .show()
                 sbEnableLeoric.isChecked = false
-                return@setOnCheckedChangeListener
-            }
-
-            // 与 Cactus 互斥处理：两者同时开启有冲突风险
-            if (isChecked && SettingUtils.enableCactus) {
-                MaterialDialog.Builder(requireContext())
-                    .title(R.string.leoric_conflict_cactus_title)
-                    .content(R.string.leoric_conflict_cactus)
-                    .positiveText("确定")
-                    .negativeText("取消")
-                    .onPositive { _: MaterialDialog, _: DialogAction? ->
-                        // 自动关闭 Cactus
-                        SettingUtils.enableCactus = false
-                        // 更新 Cactus 开关 UI
-                        binding!!.sbEnableCactus.isChecked = false
-                        binding!!.layoutCactusOptional.visibility = View.GONE
-                        binding!!.layoutMusicInterval.visibility = View.GONE
-                        SettingUtils.enableLeoric = true
-                        binding!!.layoutLeoricNotify1.visibility = View.VISIBLE
-                        binding!!.layoutLeoricNotify2.visibility = View.VISIBLE
-                        XToastUtils.warning(getString(R.string.need_to_restart))
-                    }
-                    .onNegative { _: MaterialDialog, _: DialogAction? ->
-                        sbEnableLeoric.isChecked = false
-                    }
-                    .cancelable(false)
-                    .show()
                 return@setOnCheckedChangeListener
             }
 

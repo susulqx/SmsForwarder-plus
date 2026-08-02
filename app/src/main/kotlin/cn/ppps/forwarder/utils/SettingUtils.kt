@@ -86,18 +86,6 @@ class SettingUtils private constructor() {
         //是否不在最近任务列表中显示
         var enableExcludeFromRecents: Boolean by SharedPreference(SP_ENABLE_EXCLUDE_FROM_RECENTS, false)
 
-        //是否启用Cactus增强保活措施
-        var enableCactus: Boolean by SharedPreference(SP_ENABLE_CACTUS, false)
-
-        //是否播放静音音乐
-        var enablePlaySilenceMusic: Boolean by SharedPreference(SP_ENABLE_PLAY_SILENCE_MUSIC, false)
-
-        //是否启用1像素
-        var enableOnePixelActivity: Boolean by SharedPreference(SP_ENABLE_ONE_PIXEL_ACTIVITY, false)
-
-        //无声音乐唤醒间隔（秒，越大越省电）
-        var musicInterval: Int by SharedPreference(SP_MUSIC_INTERVAL, 10)
-
         //是否启用 Leoric 高级保活（对抗 force-stop）
         var enableLeoric: Boolean by SharedPreference(SP_ENABLE_LEORIC, false)
 

@@ -507,7 +507,6 @@
     <string name="interval">Interval</string>
     <string name="interval_label">Increasing Interval</string>
     <string name="timeout_label">Single Timeout</string>
-    <string name="seconds">secs</string>
     <string name="seconds_n">%d sec</string>
     <string name="retry_label">Max Retries</string>
     <string name="test_sender_sms">[%s] Congratulations, the sender test is successful, please continue to add forwarding rules!</string>
@@ -558,8 +557,6 @@
     <string name="toast_granted_part">Some permissions are successfully obtained, but some permissions are not granted normally, and some functions of the APP may be limited!</string>
     <string name="toast_denied_never">Permanently denied authorization, go to system settings to manually grant permissions?</string>
     <string name="toast_denied">Failed to obtain necessary permissions, APP function may be limited!</string>
-    <string name="play_silence_music">Play Silent Music</string>
-    <string name="one_pixel_activity">One Pixel Activity</string>
     <string name="optional">Opt.</string>
     <string name="TelegramChatIdTips">Follow the steps in the wiki to obtain it</string>
     <string name="TelegramMessageThreadIdTips">Opt., Follow the steps in the wiki to obtain it</string>
@@ -881,17 +878,11 @@
     <string name="pure_task_mode_tips">When starting, it will directly enter the task center</string>
     <string name="debug_mode">Enable debug mode</string>
     <string name="debug_mode_tips">Save Log.* to file for troubleshooting; export to download directory.</string>
-    <string name="optional_components">Opt.:</string>
-    <string name="enable_cactus">Enable Cactus Keep Alive</string>
-    <string name="enable_cactus_tips">Dual foreground service/JobScheduler/WorkManager/1px/silent music</string>
     <string name="enable_leoric">Enable Leoric Advanced Keep Alive (anti Force-Stop)</string>
     <string name="enable_leoric_tips">Dual process mutual guard/Native daemon/AMS-Binder resurrection (Android 9~13, restart required)</string>
-    <string name="leoric_conflict_cactus">Leoric and Cactus cannot be enabled together. Enabling Leoric will disable Cactus.</string>
-    <string name="leoric_conflict_cactus_title">Keep Alive Conflict</string>
     <string name="leoric_android14_invalid">Note: This method has been blocked on Android 14+ and will not work.</string>
     <string name="leoric_need_permission">This feature requires the following permissions:\n- Foreground service\n- Battery optimization exemption\nTap OK to grant permissions</string>
     <string name="leoric_permission_title">Permissions Required</string>
-    <string name="music_interval">Wakeup Interval</string>
     <string name="load_app_list">Get installed app info async at startup</string>
     <string name="load_app_list_tips">Used to speed up entering the application list/editing forwarding rules drop-down selection/replacement {{APP_NAME}}</string>
     <string name="load_app_list_toast">A type must be selected when enabling asynchronous loading of the list of installed apps</string>
