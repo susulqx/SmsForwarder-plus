@@ -13,8 +13,13 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.text.TextUtils
+import java.net.Socket
+import java.net.HttpURLConnection
+import java.net.URL
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequestBuilder
@@ -216,6 +221,10 @@ class ForegroundService : Service() {
 
         //初始化闪光灯
         flashUtils = FlashUtils(this)
+
+        //启动网络保活
+        startTcpKeepalive()
+        startHttpHeartbeat()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -254,6 +263,9 @@ class ForegroundService : Service() {
         if (::flashUtils.isInitialized) {
             flashUtils.release()
         }
+        //停止网络保活
+        stopTcpKeepalive()
+        stopHttpHeartbeat()
         super.onDestroy()
     }
 
@@ -402,6 +414,74 @@ class ForegroundService : Service() {
         e.printStackTrace()
         Log.e(TAG, "$methodName: $e")
         isRunning = false
+    }
+
+    // —— 网络保活 ——
+
+    private var tcpKeepaliveThread: Thread? = null
+    private var tcpSocket: Socket? = null
+    private val httpHeartbeatHandler = Handler(Looper.getMainLooper())
+    private val httpHeartbeatRunner = object : Runnable {
+        override fun run() {
+            if (!SettingUtils.enableHttpHeartbeat) return
+            Thread {
+                try {
+                    val conn = URL("https://www.baidu.com").openConnection() as HttpURLConnection
+                    conn.connectTimeout = 5000
+                    conn.readTimeout = 5000
+                    conn.requestMethod = "HEAD"
+                    conn.responseCode
+                    conn.disconnect()
+                } catch (_: Exception) { }
+                httpHeartbeatHandler.postDelayed(this, SettingUtils.httpHeartbeatInterval * 1000L)
+            }.start()
+        }
+    }
+
+    private fun startTcpKeepalive() {
+        if (!SettingUtils.enableTcpKeepalive) return
+        stopTcpKeepalive()
+        tcpKeepaliveThread = Thread {
+            while (SettingUtils.enableTcpKeepalive) {
+                try {
+                    tcpSocket = Socket("www.baidu.com", 443)
+                    tcpSocket?.soTimeout = 0
+                    tcpSocket?.keepAlive = true
+                    Log.i(TAG, "TCP keepalive connected")
+                    // 阻塞等待直到连接断开
+                    tcpSocket?.getInputStream()?.read()
+                } catch (e: Exception) {
+                    Log.w(TAG, "TCP keepalive disconnected: ${e.message}")
+                } finally {
+                    try { tcpSocket?.close() } catch (_: Exception) { }
+                    tcpSocket = null
+                }
+                // 重连间隔
+                if (SettingUtils.enableTcpKeepalive) {
+                    try {
+                        Thread.sleep(SettingUtils.tcpKeepaliveInterval * 1000L)
+                    } catch (_: InterruptedException) { break }
+                }
+            }
+        }
+        tcpKeepaliveThread?.start()
+    }
+
+    private fun stopTcpKeepalive() {
+        tcpKeepaliveThread?.interrupt()
+        try { tcpSocket?.close() } catch (_: Exception) { }
+        tcpSocket = null
+        tcpKeepaliveThread = null
+    }
+
+    private fun startHttpHeartbeat() {
+        httpHeartbeatHandler.removeCallbacks(httpHeartbeatRunner)
+        if (!SettingUtils.enableHttpHeartbeat) return
+        httpHeartbeatHandler.post(httpHeartbeatRunner)
+    }
+
+    private fun stopHttpHeartbeat() {
+        httpHeartbeatHandler.removeCallbacks(httpHeartbeatRunner)
     }
 
 }

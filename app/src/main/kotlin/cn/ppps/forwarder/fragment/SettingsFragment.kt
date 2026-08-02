@@ -190,6 +190,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
         switchShowForegroundNotification(binding!!.sbShowForegroundNotification)
         switchShowLeoric1Notification(binding!!.sbShowLeoric1Notification)
         switchShowLeoric2Notification(binding!!.sbShowLeoric2Notification)
+        //网络保活
+        switchTcpKeepalive(binding!!.sbEnableTcpKeepalive, binding!!.layoutTcpKeepaliveInterval, binding!!.xsbTcpKeepaliveInterval)
+        switchHttpHeartbeat(binding!!.sbEnableHttpHeartbeat, binding!!.layoutHttpHeartbeatInterval, binding!!.xsbHttpHeartbeatInterval)
         //接口请求失败重试时间间隔
         editRetryDelayTime(binding!!.xsbRetryTimes, binding!!.xsbDelayTime, binding!!.xsbTimeout)
 
@@ -1151,6 +1154,40 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
     }
 
     //接口请求失败重试时间间隔
+    //网络保活 - TCP 长连接
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun switchTcpKeepalive(sb: SwitchButton, layoutInterval: LinearLayout, xsbInterval: XSeekBar) {
+        sb.isChecked = SettingUtils.enableTcpKeepalive
+        layoutInterval.visibility = if (SettingUtils.enableTcpKeepalive) View.VISIBLE else View.GONE
+        xsbInterval.setDefaultValue(SettingUtils.tcpKeepaliveInterval)
+
+        sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            SettingUtils.enableTcpKeepalive = isChecked
+            layoutInterval.visibility = if (isChecked) View.VISIBLE else View.GONE
+            XToastUtils.warning(getString(R.string.need_to_restart))
+        }
+        xsbInterval.setOnSeekBarListener { _: XSeekBar?, newValue: Int ->
+            SettingUtils.tcpKeepaliveInterval = newValue
+        }
+    }
+
+    //网络保活 - HTTP 心跳
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun switchHttpHeartbeat(sb: SwitchButton, layoutInterval: LinearLayout, xsbInterval: XSeekBar) {
+        sb.isChecked = SettingUtils.enableHttpHeartbeat
+        layoutInterval.visibility = if (SettingUtils.enableHttpHeartbeat) View.VISIBLE else View.GONE
+        xsbInterval.setDefaultValue(SettingUtils.httpHeartbeatInterval)
+
+        sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            SettingUtils.enableHttpHeartbeat = isChecked
+            layoutInterval.visibility = if (isChecked) View.VISIBLE else View.GONE
+            XToastUtils.warning(getString(R.string.need_to_restart))
+        }
+        xsbInterval.setOnSeekBarListener { _: XSeekBar?, newValue: Int ->
+            SettingUtils.httpHeartbeatInterval = newValue
+        }
+    }
+
     private fun editRetryDelayTime(xsbRetryTimes: XSeekBar, xsbDelayTime: XSeekBar, xsbTimeout: XSeekBar) {
         xsbRetryTimes.setDefaultValue(SettingUtils.requestRetryTimes)
         xsbRetryTimes.setOnSeekBarListener { _: XSeekBar?, newValue: Int ->

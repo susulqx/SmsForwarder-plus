@@ -929,6 +929,13 @@
     <string name="show_leoric1_notification">显示保活通知1（Persist进程）</string>
     <string name="show_leoric2_notification">显示保活通知2（Daemon进程）</string>
     <string name="leoric_notification_text_hint">自定义通知文本（留空则不显示文本）</string>
+    <string name="enable_tcp_keepalive">TCP 长连接保活</string>
+    <string name="enable_tcp_keepalive_tips">保持一个到百度的 TCP 连接，防止省电模式冻结网络栈</string>
+    <string name="tcp_keepalive_interval">TCP 重连检查间隔（秒）</string>
+    <string name="enable_http_heartbeat">HTTP 心跳保活</string>
+    <string name="enable_http_heartbeat_tips">定期发 HTTP 请求保持网络活跃，防止 Doze 挂起</string>
+    <string name="http_heartbeat_interval">HTTP 心跳间隔（秒）</string>
+    <string name="keepalive_network">网络保活</string>
     <string name="music_interval">唤醒间隔</string>
     <string name="load_app_list">启动时异步获取已安装App列表</string>
     <string name="load_app_list_tips">用于加速进入应用列表/编辑转发规则下拉选择/替换{{APP_NAME}}</string>

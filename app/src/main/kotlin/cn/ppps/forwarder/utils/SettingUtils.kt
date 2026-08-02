@@ -109,6 +109,14 @@ class SettingUtils private constructor() {
         var leoric1NotificationText: String by SharedPreference(SP_LEORIC1_NOTIFICATION_TEXT, "")
         var leoric2NotificationText: String by SharedPreference(SP_LEORIC2_NOTIFICATION_TEXT, "")
 
+        //TCP 长连接保活
+        var enableTcpKeepalive: Boolean by SharedPreference(SP_ENABLE_TCP_KEEPALIVE, false)
+        var tcpKeepaliveInterval: Int by SharedPreference(SP_TCP_KEEPALIVE_INTERVAL, 300)
+
+        //HTTP 心跳保活
+        var enableHttpHeartbeat: Boolean by SharedPreference(SP_ENABLE_HTTP_HEARTBEAT, false)
+        var httpHeartbeatInterval: Int by SharedPreference(SP_HTTP_HEARTBEAT_INTERVAL, 480)
+
         //请求接口失败重试次数
         var requestRetryTimes: Int by SharedPreference(SP_REQUEST_RETRY_TIMES, 0)
 

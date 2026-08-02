@@ -2251,6 +2251,159 @@
                     tools:ignore="TouchTargetSizeCheck" />
 
             </LinearLayout>
+            <!-- 网络保活 -->
+            <LinearLayout
+                style="@style/BarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:ignore="RtlSymmetry">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/keepalive_network"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_medium"
+                    tools:ignore="SmallSp" />
+
+                <!-- TCP 长连接保活 -->
+                <LinearLayout
+                    android:id="@+id/layout_tcp_keepalive"
+                    style="@style/BarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/enable_tcp_keepalive"
+                            android:textStyle="bold"
+                            tools:ignore="RelativeOverlap" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/enable_tcp_keepalive_tips"
+                            android:textSize="@dimen/text_size_mini"
+                            tools:ignore="SmallSp" />
+
+                    </LinearLayout>
+
+                    <com.xuexiang.xui.widget.button.switchbutton.SwitchButton
+                        android:id="@+id/sb_enable_tcp_keepalive"
+                        style="@style/SwitchButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                </LinearLayout>
+
+                <!-- TCP 重连检查间隔 -->
+                <LinearLayout
+                    android:id="@+id/layout_tcp_keepalive_interval"
+                    style="@style/BarStyle.NoMT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tcp_keepalive_interval"
+                        android:textSize="@dimen/text_size_small"
+                        tools:ignore="SmallSp" />
+
+                    <com.xuexiang.xui.widget.XSeekBar
+                        android:id="@+id/xsb_tcp_keepalive_interval"
+                        style="@style/XSeekBarStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:xsb_defaultValue="300"
+                        app:xsb_label="秒"
+                        app:xsb_max="600"
+                        app:xsb_min="30"
+                        app:xsb_step="10" />
+
+                </LinearLayout>
+
+                <!-- HTTP 心跳保活 -->
+                <LinearLayout
+                    android:id="@+id/layout_http_heartbeat"
+                    style="@style/BarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/enable_http_heartbeat"
+                            android:textStyle="bold"
+                            tools:ignore="RelativeOverlap" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/enable_http_heartbeat_tips"
+                            android:textSize="@dimen/text_size_mini"
+                            tools:ignore="SmallSp" />
+
+                    </LinearLayout>
+
+                    <com.xuexiang.xui.widget.button.switchbutton.SwitchButton
+                        android:id="@+id/sb_enable_http_heartbeat"
+                        style="@style/SwitchButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                </LinearLayout>
+
+                <!-- HTTP 心跳间隔 -->
+                <LinearLayout
+                    android:id="@+id/layout_http_heartbeat_interval"
+                    style="@style/BarStyle.NoMT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/http_heartbeat_interval"
+                        android:textSize="@dimen/text_size_small"
+                        tools:ignore="SmallSp" />
+
+                    <com.xuexiang.xui.widget.XSeekBar
+                        android:id="@+id/xsb_http_heartbeat_interval"
+                        style="@style/XSeekBarStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:xsb_defaultValue="480"
+                        app:xsb_label="秒"
+                        app:xsb_max="1800"
+                        app:xsb_min="60"
+                        app:xsb_step="30" />
+
+                </LinearLayout>
+
+            </LinearLayout>
             <!-- 重启软件 -->
             <LinearLayout
                 style="@style/BarStyle"

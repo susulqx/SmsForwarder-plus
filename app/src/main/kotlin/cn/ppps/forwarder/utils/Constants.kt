@@ -113,6 +113,11 @@ const val SP_SHOW_LEORIC2_NOTIFICATION = "show_leoric2_notification"
 const val SP_LEORIC1_NOTIFICATION_TEXT = "leoric1_notification_text"
 const val SP_LEORIC2_NOTIFICATION_TEXT = "leoric2_notification_text"
 
+const val SP_ENABLE_TCP_KEEPALIVE = "enable_tcp_keepalive"
+const val SP_TCP_KEEPALIVE_INTERVAL = "tcp_keepalive_interval"
+const val SP_ENABLE_HTTP_HEARTBEAT = "enable_http_heartbeat"
+const val SP_HTTP_HEARTBEAT_INTERVAL = "http_heartbeat_interval"
+
 //规则相关
 const val STATUS_ON = 1
 const val STATUS_OFF = 0
