@@ -2391,7 +2391,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:xsb_max="1800"
-                        app:xsb_min="60"
+                        app:xsb_min="60" />
 
                 </LinearLayout>
 
