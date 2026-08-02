@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Telephony
 import androidx.work.BackoffPolicy
-import androidx.work.Constraints
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -124,22 +122,19 @@ class SmsReceiver : BroadcastReceiver() {
             // goAsync 延长广播生命周期，在省电模式/Doze 下抢在冻结前完成转发
             val pendingResult = goAsync()
             GlobalScope.launch(Dispatchers.IO) {
-                var forwarded = false
                 try {
-                    forwarded = doSyncForwarding(msgInfo)
+                    doSyncForwarding(msgInfo)
                 } catch (e: Exception) {
                     Log.e(TAG, "Sync forwarding failed: ${e.message}")
                 } finally {
-                    // 同步转发失败/无匹配规则时，交给 WorkManager 兜底重试
-                    if (!forwarded) {
-                        val request = OneTimeWorkRequestBuilder<SendWorker>()
-                            .setInputData(workDataOf(Worker.SEND_MSG_INFO to Gson().toJson(msgInfo)))
-                            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
-                            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                            .build()
-                        WorkManager.getInstance(context).enqueue(request)
-                        Log.d(TAG, "Fallback to WorkManager retry")
-                    }
+                    // 始终入队 WorkManager 兜底：sendMsgSender 走异步回调，无法在广播窗口内确认结果；
+                    // 省电模式下网络可能被挂起，WM delayed retry 可在网络恢复后完成转发
+                    val request = OneTimeWorkRequestBuilder<SendWorker>()
+                        .setInputData(workDataOf(Worker.SEND_MSG_INFO to Gson().toJson(msgInfo)))
+                        .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+                        .build()
+                    WorkManager.getInstance(context).enqueue(request)
+                    Log.d(TAG, "WorkManager fallback enqueued")
                     pendingResult.finish()
                 }
             }
@@ -225,36 +220,25 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 
-    /**
-     * 在广播生命周期内同步完成规则匹配+转发
-     * 利用 goAsync() 延长的约10秒窗口，省电/Doze 模式下抢在系统冻结前发出
-     * @return true 表示全部转发成功，false 表示需要 WorkManager 兜底
-     */
-    private suspend fun doSyncForwarding(msgInfo: MsgInfo): Boolean {
-        try {
-            val simSlot = "SIM" + (msgInfo.simSlot + 1)
-            val ruleList = Core.rule.getRuleList(msgInfo.type, 1, simSlot)
-            if (ruleList.isEmpty()) return false
+    private suspend fun doSyncForwarding(msgInfo: MsgInfo) {
+        val simSlot = "SIM" + (msgInfo.simSlot + 1)
+        val ruleList = Core.rule.getRuleList(msgInfo.type, 1, simSlot)
+        if (ruleList.isEmpty()) return
 
-            val matched = ruleList.filter { it.checkMsg(msgInfo) }
-            if (matched.isEmpty()) return false
+        val matched = ruleList.filter { it.checkMsg(msgInfo) }
+        if (matched.isEmpty()) return
 
-            val msg = Msg(0, msgInfo.type, msgInfo.from, msgInfo.content, msgInfo.simSlot, msgInfo.simInfo, msgInfo.subId, msgInfo.callType)
-            val msgId = Core.msg.insert(msg)
+        val msg = Msg(0, msgInfo.type, msgInfo.from, msgInfo.content, msgInfo.simSlot, msgInfo.simInfo, msgInfo.subId, msgInfo.callType)
+        val msgId = Core.msg.insert(msg)
 
-            for (rule in matched) {
-                val sender = rule.senderList[0]
-                val log = Logs(0, msgInfo.type, msgId, rule.id, sender.id)
-                val logId = Core.logs.insert(log)
-                SendUtils.sendMsgSender(msgInfo, rule, 0, logId, msgId)
-            }
-
-            Log.i(TAG, "Sync forwarding completed: ${matched.size} rules matched")
-            return true
-        } catch (e: Exception) {
-            Log.e(TAG, "doSyncForwarding error: ${e.message}")
-            return false
+        for (rule in matched) {
+            val sender = rule.senderList[0]
+            val log = Logs(0, msgInfo.type, msgId, rule.id, sender.id)
+            val logId = Core.logs.insert(log)
+            SendUtils.sendMsgSender(msgInfo, rule, 0, logId, msgId)
         }
+
+        Log.i(TAG, "Sync forwarding attempted: ${matched.size} rules, msgId=$msgId")
     }
 
 }
