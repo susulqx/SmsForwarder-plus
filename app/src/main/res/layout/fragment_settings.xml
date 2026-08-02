@@ -2322,16 +2322,12 @@
                         android:textSize="@dimen/text_size_small"
                         tools:ignore="SmallSp" />
 
-                    <com.xuexiang.xui.widget.XSeekBar
+                    <com.xuexiang.xui.widget.picker.XSeekBar
                         android:id="@+id/xsb_tcp_keepalive_interval"
-                        style="@style/XSeekBarStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:xsb_defaultValue="300"
-                        app:xsb_label="秒"
                         app:xsb_max="600"
-                        app:xsb_min="30"
-                        app:xsb_step="10" />
+                        app:xsb_min="30" />
 
                 </LinearLayout>
 
@@ -2390,16 +2386,12 @@
                         android:textSize="@dimen/text_size_small"
                         tools:ignore="SmallSp" />
 
-                    <com.xuexiang.xui.widget.XSeekBar
+                    <com.xuexiang.xui.widget.picker.XSeekBar
                         android:id="@+id/xsb_http_heartbeat_interval"
-                        style="@style/XSeekBarStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:xsb_defaultValue="480"
-                        app:xsb_label="秒"
                         app:xsb_max="1800"
                         app:xsb_min="60"
-                        app:xsb_step="30" />
 
                 </LinearLayout>
 
