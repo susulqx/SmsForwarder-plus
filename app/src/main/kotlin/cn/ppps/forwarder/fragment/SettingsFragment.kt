@@ -61,7 +61,6 @@ import cn.ppps.forwarder.utils.Log
 import cn.ppps.forwarder.utils.PhoneUtils
 import cn.ppps.forwarder.utils.ProximitySensorScreenHelper
 import cn.ppps.forwarder.utils.SettingUtils
-import cn.ppps.forwarder.utils.ShizukuKeepaliveHelper
 import cn.ppps.forwarder.utils.XToastUtils
 import cn.ppps.forwarder.widget.GuideTipsDialog
 import cn.ppps.forwarder.workers.LoadAppListWorker
@@ -78,8 +77,6 @@ import com.xuexiang.xpage.core.PageOption
 import com.xuexiang.xui.widget.actionbar.TitleBar
 import com.xuexiang.xui.widget.button.SmoothCheckBox
 import com.xuexiang.xui.widget.button.switchbutton.SwitchButton
-import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
-import android.widget.Button
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.xuexiang.xui.widget.picker.XSeekBar
@@ -191,10 +188,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
         switchShowForegroundNotification(binding!!.sbShowForegroundNotification)
         switchShowLeoric1Notification(binding!!.sbShowLeoric1Notification)
         switchShowLeoric2Notification(binding!!.sbShowLeoric2Notification)
-        //Shizuku Doze 白名单（第0层）+ ADB 终端
-        switchShizukuDoze(binding!!.sbEnableShizukuDoze, binding!!.layoutShizukuDozeStatus,
-            binding!!.btnShizukuDozeExecute, binding!!.etShizukuCommand, binding!!.btnShizukuExecute,
-            binding!!.tvShizukuOutput, binding!!.scbShizukuAuto)
         //ServiceGuard 自检（第5层）
         switchServiceGuard(binding!!.sbEnableServiceGuard, binding!!.layoutServiceGuardInterval, binding!!.xsbServiceGuardInterval)
         //网络保活
@@ -1066,59 +1059,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
-    }
-
-    //接口请求失败重试时间间隔
-    //第0层保活 - Shizuku Doze 白名单 + ADB 终端
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private fun switchShizukuDoze(sb: SwitchButton, layoutStatus: LinearLayout, btnExecute: Button,
-                                   etCommand: MaterialEditText, btnExec: Button, tvOutput: TextView,
-                                   scbAuto: SmoothCheckBox) {
-        sb.isChecked = SettingUtils.enableShizukuDoze
-        layoutStatus.visibility = if (SettingUtils.enableShizukuDoze) View.VISIBLE else View.GONE
-
-        sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            SettingUtils.enableShizukuDoze = isChecked
-            layoutStatus.visibility = if (isChecked) View.VISIBLE else View.GONE
-            XToastUtils.warning(getString(R.string.need_to_restart))
-        }
-
-        // Doze 白名单执行
-        btnExecute.setOnClickListener {
-            execShizukuAndShow { ShizukuKeepaliveHelper.executeAll(requireContext()) }
-        }
-
-        // ADB 终端执行
-        btnExec.setOnClickListener {
-            val cmd = etCommand.text.toString().trim()
-            if (cmd.isEmpty()) {
-                XToastUtils.warning("请输入命令")
-                return@setOnClickListener
-            }
-            val autoCycle = scbAuto.isChecked
-            if (autoCycle) {
-                execShizukuAndShow { ShizukuKeepaliveHelper.executeKeepaliveCycle(requireContext()) }
-            } else {
-                execShizukuAndShow { ShizukuKeepaliveHelper.execCommand(cmd) ?: "执行失败" }
-            }
-        }
-    }
-
-    private fun execShizukuAndShow(action: () -> String) {
-        if (!ShizukuKeepaliveHelper.isShizukuAvailable()) {
-            binding!!.tvShizukuOutput.text = "Shizuku 未安装或未启动"
-            return
-        }
-        if (!ShizukuKeepaliveHelper.isPermissionGranted()) {
-            ShizukuKeepaliveHelper.requestPermission()
-            binding!!.tvShizukuOutput.text = "请在弹出的对话框中授权 Shizuku"
-            return
-        }
-        binding!!.tvShizukuOutput.text = "执行中..."
-        Thread {
-            val result = action()
-            binding!!.tvShizukuOutput.post { binding!!.tvShizukuOutput.text = result }
-        }.start()
     }
 
     //第5层保活 - ServiceGuard 自检看门狗

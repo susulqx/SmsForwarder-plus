@@ -1271,7 +1271,7 @@
 
             <!-- ========== 保活策略 ========== -->
 
-            <!-- 第0层：Shizuku Doze 白名单 -->
+            <!-- Doze 白名单提示（需通过电脑 ADB 执行一次） -->
             <LinearLayout
                 style="@style/BarStyle"
                 android:layout_width="match_parent"
@@ -1282,147 +1282,17 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/keepalive_l0_title"
+                    android:text="第0层：Doze 电池优化白名单"
                     android:textStyle="bold"
                     android:textSize="@dimen/text_size_medium"
                     tools:ignore="SmallSp" />
 
-                <LinearLayout
-                    android:id="@+id/layout_shizuku_doze"
-                    style="@style/BarStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/enable_shizuku_doze"
-                            android:textStyle="bold"
-                            tools:ignore="RelativeOverlap" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/enable_shizuku_doze_tips"
-                            android:textSize="@dimen/text_size_mini"
-                            tools:ignore="SmallSp" />
-
-                    </LinearLayout>
-
-                    <com.xuexiang.xui.widget.button.switchbutton.SwitchButton
-                        android:id="@+id/sb_enable_shizuku_doze"
-                        style="@style/SwitchButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:ignore="TouchTargetSizeCheck" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_shizuku_doze_status"
-                    style="@style/BarStyle.NoMT"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <Button
-                        android:id="@+id/btn_shizuku_doze_execute"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/enable_shizuku_doze_status"
-                        android:textAllCaps="false"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:textColor="@android:color/white"
-                        tools:ignore="TouchTargetSizeCheck" />
-
-                </LinearLayout>
-            <!-- Shizuku ADB 终端 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                tools:ignore="RtlSymmetry">
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Shizuku ADB 终端"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/text_size_small"
+                    android:text="请通过电脑执行一次：adb shell dumpsys deviceidle whitelist +cn.ppps.forwarder（永久有效，关机不失效）"
+                    android:textSize="@dimen/text_size_mini"
                     tools:ignore="SmallSp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
-                        android:id="@+id/et_shizuku_command"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="输入 shell 命令"
-                        android:singleLine="true"
-                        android:textSize="12sp"
-                        app:met_clearButton="true"
-                        tools:ignore="SmallSp,TouchTargetSizeCheck" />
-
-                    <com.xuexiang.xui.widget.button.SmoothCheckBox
-                        android:id="@+id/scb_shizuku_auto"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginStart="5dp"
-                        app:scb_color_checked="@color/colorPrimary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="循环"
-                        android:textSize="@dimen/text_size_small"
-                        tools:ignore="SmallSp" />
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btn_shizuku_execute"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:text="执行"
-                    android:textAllCaps="false"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:textColor="@android:color/white"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="5dp"
-                    android:background="#11000000">
-
-                    <TextView
-                        android:id="@+id/tv_shizuku_output"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:padding="8dp"
-                        android:text="等待命令..."
-                        android:textSize="11sp"
-                        tools:ignore="SmallSp" />
-
-                </ScrollView>
-
-            </LinearLayout>
 
             </LinearLayout>
 

@@ -11,7 +11,6 @@
         android:name="android.hardware.camera.flash"
         android:required="false" />
 
-    <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
     <uses-permission android:name="com.android.permission.GET_INSTALLED_APPS" />
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
@@ -429,14 +428,6 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>
-
-
-        <!-- Shizuku 权限代理 -->
-        <provider
-            android:name="rikka.shizuku.ShizukuProvider"
-            android:authorities="${applicationId}.shizuku"
-            android:exported="true"
-            android:multiprocess="false" />
 
         <!-- ServiceGuard 自检看门狗 -->
         <receiver
