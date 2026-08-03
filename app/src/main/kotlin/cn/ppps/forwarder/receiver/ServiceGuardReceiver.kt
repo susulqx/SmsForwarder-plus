@@ -12,6 +12,7 @@ import cn.ppps.forwarder.service.LeoricService2
 import cn.ppps.forwarder.utils.ACTION_START
 import cn.ppps.forwarder.utils.Log
 import cn.ppps.forwarder.utils.SettingUtils
+import cn.ppps.forwarder.utils.ShizukuKeepaliveHelper
 
 /**
  * 第5层保活：AlarmManager 自检看门狗
@@ -83,6 +84,16 @@ class ServiceGuardReceiver : BroadcastReceiver() {
         if (intent?.action != ACTION_GUARD_CHECK) return
 
         Log.d(TAG, "Guard check running...")
+
+        // 第0层：Shizuku 循环保活
+        if (SettingUtils.enableShizukuDoze) {
+            try {
+                ShizukuKeepaliveHelper.executeKeepaliveCycle(context)
+                Log.d(TAG, "Shizuku keepalive cycle completed")
+            } catch (e: Exception) {
+                Log.e(TAG, "Shizuku cycle failed: ${e.message}")
+            }
+        }
 
         // 检查并拉起 ForegroundService
         if (SettingUtils.enableForegroundService && !ForegroundService.isRunning) {

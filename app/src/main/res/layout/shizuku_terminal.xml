@@ -1,0 +1,79 @@
+            <!-- Shizuku ADB 终端 -->
+            <LinearLayout
+                style="@style/BarStyle.Console"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:ignore="RtlSymmetry">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Shizuku ADB 终端"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_small"
+                    tools:ignore="SmallSp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+                        android:id="@+id/et_shizuku_command"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="输入 shell 命令"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        app:met_clearButton="true"
+                        tools:ignore="SmallSp,TouchTargetSizeCheck" />
+
+                    <com.xuexiang.xui.widget.button.SmoothCheckBox
+                        android:id="@+id/scb_shizuku_auto"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="5dp"
+                        app:scb_color_checked="@color/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="循环"
+                        android:textSize="@dimen/text_size_small"
+                        tools:ignore="SmallSp" />
+
+                </LinearLayout>
+
+                <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+                    android:id="@+id/btn_shizuku_execute"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="执行"
+                    android:textAllCaps="false"
+                    app:sbtn_backgroundColor="@color/colorPrimary"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#11000000">
+
+                    <TextView
+                        android:id="@+id/tv_shizuku_output"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:padding="8dp"
+                        android:text="等待命令..."
+                        android:textSize="11sp"
+                        tools:ignore="SmallSp" />
+
+                </ScrollView>
+
+            </LinearLayout>
