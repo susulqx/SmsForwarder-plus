@@ -58,6 +58,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        aidl true
     }
 
     //编译日期
@@ -414,6 +415,12 @@ dependencies {
     //FreeReflection - 解除 Android 9+ 隐藏 API 限制，Leoric 保活依赖
     //https://github.com/tiann/FreeReflection
     implementation 'com.github.tiann:FreeReflection:3.2.0'
+
+    //Shizuku - ADB 权限代理，用于自动添加 Doze 白名单
+    //https://github.com/RikkaApps/Shizuku
+    def shizuku_version = "13.1.5"
+    implementation "dev.rikka.shizuku:api:$shizuku_version"
+    implementation "dev.rikka.shizuku:provider:$shizuku_version"
 
     //HTTP服务器：https://github.com/yanzhenjie/AndServer
     implementation 'cn.ppps.andserver:api:2.1.12'

@@ -61,6 +61,7 @@ import cn.ppps.forwarder.utils.Log
 import cn.ppps.forwarder.utils.PhoneUtils
 import cn.ppps.forwarder.utils.ProximitySensorScreenHelper
 import cn.ppps.forwarder.utils.SettingUtils
+import cn.ppps.forwarder.utils.ShizukuKeepaliveHelper
 import cn.ppps.forwarder.utils.XToastUtils
 import cn.ppps.forwarder.widget.GuideTipsDialog
 import cn.ppps.forwarder.workers.LoadAppListWorker
@@ -77,6 +78,7 @@ import com.xuexiang.xpage.core.PageOption
 import com.xuexiang.xui.widget.actionbar.TitleBar
 import com.xuexiang.xui.widget.button.SmoothCheckBox
 import com.xuexiang.xui.widget.button.switchbutton.SwitchButton
+import com.xuexiang.xui.widget.textview.supertextview.SuperButton
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.xuexiang.xui.widget.picker.XSeekBar
@@ -188,6 +190,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
         switchShowForegroundNotification(binding!!.sbShowForegroundNotification)
         switchShowLeoric1Notification(binding!!.sbShowLeoric1Notification)
         switchShowLeoric2Notification(binding!!.sbShowLeoric2Notification)
+        //Shizuku Doze 白名单（第0层）
+        switchShizukuDoze(binding!!.sbEnableShizukuDoze, binding!!.layoutShizukuDozeStatus, binding!!.btnShizukuDozeExecute)
+        //ServiceGuard 自检（第5层）
+        switchServiceGuard(binding!!.sbEnableServiceGuard, binding!!.layoutServiceGuardInterval, binding!!.xsbServiceGuardInterval)
         //网络保活
         switchTcpKeepalive(binding!!.sbEnableTcpKeepalive, binding!!.layoutTcpKeepaliveInterval, binding!!.xsbTcpKeepaliveInterval)
         switchHttpHeartbeat(binding!!.sbEnableHttpHeartbeat, binding!!.layoutHttpHeartbeatInterval, binding!!.xsbHttpHeartbeatInterval)
@@ -1060,6 +1066,50 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
     }
 
     //接口请求失败重试时间间隔
+    //第0层保活 - Shizuku Doze 白名单
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun switchShizukuDoze(sb: SwitchButton, layoutStatus: LinearLayout, btnExecute: SuperButton) {
+        sb.isChecked = SettingUtils.enableShizukuDoze
+        layoutStatus.visibility = if (SettingUtils.enableShizukuDoze) View.VISIBLE else View.GONE
+
+        sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            SettingUtils.enableShizukuDoze = isChecked
+            layoutStatus.visibility = if (isChecked) View.VISIBLE else View.GONE
+            XToastUtils.warning(getString(R.string.need_to_restart))
+        }
+
+        btnExecute.setOnClickListener {
+            if (!ShizukuKeepaliveHelper.isShizukuAvailable()) {
+                XToastUtils.error("Shizuku 未安装或未启动")
+                return@setOnClickListener
+            }
+            if (!ShizukuKeepaliveHelper.isPermissionGranted()) {
+                ShizukuKeepaliveHelper.requestPermission()
+                XToastUtils.info("请在弹出的对话框中授权 Shizuku")
+                return@setOnClickListener
+            }
+            val result = ShizukuKeepaliveHelper.executeAll(requireContext())
+            XToastUtils.success(result)
+        }
+    }
+
+    //第5层保活 - ServiceGuard 自检看门狗
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun switchServiceGuard(sb: SwitchButton, layoutInterval: LinearLayout, xsbInterval: XSeekBar) {
+        sb.isChecked = SettingUtils.enableServiceGuard
+        layoutInterval.visibility = if (SettingUtils.enableServiceGuard) View.VISIBLE else View.GONE
+        xsbInterval.setDefaultValue(SettingUtils.serviceGuardInterval)
+
+        sb.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            SettingUtils.enableServiceGuard = isChecked
+            layoutInterval.visibility = if (isChecked) View.VISIBLE else View.GONE
+            XToastUtils.warning(getString(R.string.need_to_restart))
+        }
+        xsbInterval.setOnSeekBarListener { _: XSeekBar?, newValue: Int ->
+            SettingUtils.serviceGuardInterval = newValue
+        }
+    }
+
     //网络保活 - TCP 长连接
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun switchTcpKeepalive(sb: SwitchButton, layoutInterval: LinearLayout, xsbInterval: XSeekBar) {

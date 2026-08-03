@@ -929,6 +929,16 @@
     <string name="enable_http_heartbeat_tips">定期发 HTTP 请求保持网络活跃，防止 Doze 挂起</string>
     <string name="http_heartbeat_interval">HTTP 心跳间隔（秒）</string>
     <string name="keepalive_network">网络保活</string>
+    <string name="keepalive_l0_title">第0层：Shizuku Doze 白名单</string>
+    <string name="enable_shizuku_doze">自动添加到 Doze 白名单</string>
+    <string name="enable_shizuku_doze_tips">通过 Shizuku 获得 ADB 权限，一次执行永久有效。需先安装 Shizuku 并授权</string>
+    <string name="enable_shizuku_doze_status">Shizuku 状态</string>
+    <string name="keepalive_l2_title">第2层：前台高优通知</string>
+    <string name="keepalive_l4_title">第4层：Leoric 双进程保活</string>
+    <string name="keepalive_l5_title">第5层：ServiceGuard 自检</string>
+    <string name="enable_service_guard">启用服务自检看门狗</string>
+    <string name="enable_service_guard_tips">定期检查核心服务是否存活，死了自动拉起</string>
+    <string name="service_guard_interval">自检间隔（分钟）</string>
     <string name="load_app_list">启动时异步获取已安装App列表</string>
     <string name="load_app_list_tips">用于加速进入应用列表/编辑转发规则下拉选择/替换{{APP_NAME}}</string>
     <string name="load_app_list_toast">开启异步获取已安装App列表时必选一个类型</string>

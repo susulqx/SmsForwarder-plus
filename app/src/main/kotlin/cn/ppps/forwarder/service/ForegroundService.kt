@@ -23,6 +23,7 @@ import cn.ppps.forwarder.App
 import cn.ppps.forwarder.R
 import cn.ppps.forwarder.core.Core
 import cn.ppps.forwarder.entity.action.AlarmSetting
+import cn.ppps.forwarder.receiver.ServiceGuardReceiver
 import cn.ppps.forwarder.utils.ACTION_START
 import cn.ppps.forwarder.utils.ACTION_STOP
 import cn.ppps.forwarder.utils.ACTION_STOP_ALARM
@@ -216,6 +217,9 @@ class ForegroundService : Service() {
 
         //初始化闪光灯
         flashUtils = FlashUtils(this)
+
+        //启动 ServiceGuard 自检（第5层）
+        ServiceGuardReceiver.schedule(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

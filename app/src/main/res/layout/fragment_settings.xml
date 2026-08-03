@@ -1269,7 +1269,163 @@
 
             </LinearLayout>
 
-            <!-- Leoric 高级保活 -->
+            <!-- ========== 保活策略 ========== -->
+
+            <!-- 第0层：Shizuku Doze 白名单 -->
+            <LinearLayout
+                style="@style/BarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:ignore="RtlSymmetry">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/keepalive_l0_title"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_medium"
+                    tools:ignore="SmallSp" />
+
+                <LinearLayout
+                    android:id="@+id/layout_shizuku_doze"
+                    style="@style/BarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/enable_shizuku_doze"
+                            android:textStyle="bold"
+                            tools:ignore="RelativeOverlap" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/enable_shizuku_doze_tips"
+                            android:textSize="@dimen/text_size_mini"
+                            tools:ignore="SmallSp" />
+
+                    </LinearLayout>
+
+                    <com.xuexiang.xui.widget.button.switchbutton.SwitchButton
+                        android:id="@+id/sb_enable_shizuku_doze"
+                        style="@style/SwitchButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_shizuku_doze_status"
+                    style="@style/BarStyle.NoMT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+                        android:id="@+id/btn_shizuku_doze_execute"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/enable_shizuku_doze_status"
+                        android:textAllCaps="false"
+                        app:sbtn_backgroundColor="@color/colorPrimary"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- 第5层：ServiceGuard 自检 -->
+            <LinearLayout
+                style="@style/BarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:ignore="RtlSymmetry">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/keepalive_l5_title"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_medium"
+                    tools:ignore="SmallSp" />
+
+                <LinearLayout
+                    android:id="@+id/layout_service_guard"
+                    style="@style/BarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/enable_service_guard"
+                            android:textStyle="bold"
+                            tools:ignore="RelativeOverlap" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/enable_service_guard_tips"
+                            android:textSize="@dimen/text_size_mini"
+                            tools:ignore="SmallSp" />
+
+                    </LinearLayout>
+
+                    <com.xuexiang.xui.widget.button.switchbutton.SwitchButton
+                        android:id="@+id/sb_enable_service_guard"
+                        style="@style/SwitchButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_service_guard_interval"
+                    style="@style/BarStyle.NoMT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/service_guard_interval"
+                        android:textSize="@dimen/text_size_small"
+                        tools:ignore="SmallSp" />
+
+                    <com.xuexiang.xui.widget.picker.XSeekBar
+                        android:id="@+id/xsb_service_guard_interval"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:xsb_max="120"
+                        app:xsb_min="5" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <!-- 第4层：Leoric 双进程保活（对抗force-stop）-->
             <LinearLayout
                 style="@style/BarStyle"
                 android:layout_width="match_parent"
@@ -2086,6 +2242,7 @@
             </LinearLayout>
 
 
+            <!-- 第2层：前台高优通知 -->
             <!-- 常驻通知开关 -->
             <LinearLayout
                 style="@style/BarStyle"

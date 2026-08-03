@@ -101,6 +101,9 @@ const val SP_BLUETOOTH_IGNORE_ANONYMOUS = "bluetooth_ignore_anonymous"
 
 //保活相关
 const val SP_ENABLE_LEORIC = "enable_leoric"
+const val SP_ENABLE_SHIZUKU_DOZE = "enable_shizuku_doze"
+const val SP_ENABLE_SERVICE_GUARD = "enable_service_guard"
+const val SP_SERVICE_GUARD_INTERVAL = "service_guard_interval"
 
 const val SP_SHOW_FOREGROUND_NOTIFICATION = "show_foreground_notification"
 const val SP_SHOW_LEORIC1_NOTIFICATION = "show_leoric1_notification"

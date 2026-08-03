@@ -89,6 +89,13 @@ class SettingUtils private constructor() {
         //是否启用 Leoric 高级保活（对抗 force-stop）
         var enableLeoric: Boolean by SharedPreference(SP_ENABLE_LEORIC, false)
 
+        //Shizuku Doze 白名单
+        var enableShizukuDoze: Boolean by SharedPreference(SP_ENABLE_SHIZUKU_DOZE, false)
+
+        //ServiceGuard 自检看门狗
+        var enableServiceGuard: Boolean by SharedPreference(SP_ENABLE_SERVICE_GUARD, false)
+        var serviceGuardInterval: Int by SharedPreference(SP_SERVICE_GUARD_INTERVAL, 15)
+
         //是否显示常驻通知
         var showForegroundNotification: Boolean by SharedPreference(SP_SHOW_FOREGROUND_NOTIFICATION, true)
         var showLeoric1Notification: Boolean by SharedPreference(SP_SHOW_LEORIC1_NOTIFICATION, true)

@@ -30,6 +30,8 @@ import cn.ppps.forwarder.leoric.Leoric
 import cn.ppps.forwarder.leoric.LeoricConfigs
 import cn.ppps.forwarder.receiver.BatteryReceiver
 import cn.ppps.forwarder.receiver.BluetoothReceiver
+import cn.ppps.forwarder.receiver.ServiceGuardReceiver
+import cn.ppps.forwarder.utils.ShizukuKeepaliveHelper
 import cn.ppps.forwarder.receiver.LockScreenReceiver
 import cn.ppps.forwarder.receiver.NetworkChangeReceiver
 import cn.ppps.forwarder.service.BluetoothScanService
@@ -304,6 +306,26 @@ class App : Application(), Configuration.Provider by Core {
                     Log.i(TAG, "Leoric 保活守护服务已启动")
                 } catch (e: Exception) {
                     Log.e(TAG, "Leoric 保活服务启动失败: ${e.message}")
+                }
+            }
+
+            // 第0层保活：Shizuku Doze 白名单（启动时执行一次）
+            if (SettingUtils.enableShizukuDoze) {
+                try {
+                    val dozeResult = ShizukuKeepaliveHelper.executeDozeWhitelist(this)
+                    Log.i(TAG, "Shizuku Doze whitelist: $dozeResult")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Shizuku Doze whitelist failed: ${e.message}")
+                }
+            }
+
+            // 第5层保活：ServiceGuard 自检看门狗
+            if (SettingUtils.enableServiceGuard) {
+                try {
+                    ServiceGuardReceiver.schedule(this)
+                    Log.i(TAG, "ServiceGuard scheduled: ${SettingUtils.serviceGuardInterval}min")
+                } catch (e: Exception) {
+                    Log.e(TAG, "ServiceGuard schedule failed: ${e.message}")
                 }
             }
 
