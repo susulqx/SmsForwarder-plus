@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="internalOnly">
 
+    <!-- Shizuku provider 要求 minSdk 23，项目 minSdk 19，通过此声明覆盖兼容 -->
+    <uses-sdk tools:overrideLibrary="rikka.shizuku.provider" />
+
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
