@@ -1333,19 +1333,19 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+                    <Button
                         android:id="@+id/btn_shizuku_doze_execute"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/enable_shizuku_doze_status"
                         android:textAllCaps="false"
-                        app:sbtn_backgroundColor="@color/colorPrimary"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:textColor="@android:color/white"
                         tools:ignore="TouchTargetSizeCheck" />
 
                 </LinearLayout>
             <!-- Shizuku ADB 终端 -->
             <LinearLayout
-                style="@style/BarStyle.Console"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -1393,14 +1393,15 @@
 
                 </LinearLayout>
 
-                <com.xuexiang.xui.widget.textview.supertextview.SuperButton
+                <Button
                     android:id="@+id/btn_shizuku_execute"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="执行"
                     android:textAllCaps="false"
-                    app:sbtn_backgroundColor="@color/colorPrimary"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textColor="@android:color/white"
                     tools:ignore="TouchTargetSizeCheck" />
 
                 <ScrollView

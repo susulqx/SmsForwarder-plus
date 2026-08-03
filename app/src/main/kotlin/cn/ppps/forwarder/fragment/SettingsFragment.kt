@@ -79,7 +79,7 @@ import com.xuexiang.xui.widget.actionbar.TitleBar
 import com.xuexiang.xui.widget.button.SmoothCheckBox
 import com.xuexiang.xui.widget.button.switchbutton.SwitchButton
 import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
-import com.xuexiang.xui.widget.textview.supertextview.SuperButton
+import android.widget.Button
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.xuexiang.xui.widget.picker.XSeekBar
@@ -1071,8 +1071,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding?>(), View.OnClickL
     //接口请求失败重试时间间隔
     //第0层保活 - Shizuku Doze 白名单 + ADB 终端
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private fun switchShizukuDoze(sb: SwitchButton, layoutStatus: LinearLayout, btnExecute: SuperButton,
-                                   etCommand: MaterialEditText, btnExec: SuperButton, tvOutput: TextView,
+    private fun switchShizukuDoze(sb: SwitchButton, layoutStatus: LinearLayout, btnExecute: Button,
+                                   etCommand: MaterialEditText, btnExec: Button, tvOutput: TextView,
                                    scbAuto: SmoothCheckBox) {
         sb.isChecked = SettingUtils.enableShizukuDoze
         layoutStatus.visibility = if (SettingUtils.enableShizukuDoze) View.VISIBLE else View.GONE
