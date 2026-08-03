@@ -95,8 +95,8 @@ class ServiceGuardReceiver : BroadcastReceiver() {
             }
         }
 
-        // 检查并拉起 ForegroundService
-        if (SettingUtils.enableForegroundService && !ForegroundService.isRunning) {
+        // 检查并拉起 ForegroundService（无设置项，始终应运行）
+        if (!ForegroundService.isRunning) {
             Log.w(TAG, "ForegroundService is dead, restarting...")
             val serviceIntent = Intent(context, ForegroundService::class.java).apply {
                 action = ACTION_START

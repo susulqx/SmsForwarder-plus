@@ -3,6 +3,8 @@ package cn.ppps.forwarder.utils
 import android.content.Context
 import android.content.pm.PackageManager
 import rikka.shizuku.Shizuku
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 /**
  * 第0层保活：通过 Shizuku 获得 ADB 权限执行系统级保活命令。
@@ -11,6 +13,26 @@ import rikka.shizuku.Shizuku
 object ShizukuKeepaliveHelper {
 
     private const val TAG = "ShizukuKeepalive"
+
+    // Shizuku 13.x 把 newProcess 设为 private，需要用反射访问
+    private val newProcessMethod by lazy {
+        Shizuku::class.java.getDeclaredMethod(
+            "newProcess",
+            Array<String>::class.java,
+            String::class.java,
+            String::class.java
+        ).apply { isAccessible = true }
+    }
+
+    /** 通过反射调用 Shizuku.newProcess */
+    private fun shizukuExec(cmd: Array<String>): Process? {
+        return try {
+            newProcessMethod.invoke(null, cmd, null, null) as? Process
+        } catch (e: Exception) {
+            Log.w(TAG, "shizukuExec failed: ${e.message}")
+            null
+        }
+    }
 
     /** 检查 Shizuku 是否已安装并可用 */
     fun isShizukuAvailable(): Boolean {
@@ -46,7 +68,7 @@ object ShizukuKeepaliveHelper {
     fun execCommand(command: String): String? {
         if (!isShizukuAvailable() || !isPermissionGranted()) return null
         return try {
-            val process = Shizuku.newProcess(arrayOf("sh", "-c", command), null, null)
+            val process = shizukuExec(arrayOf("sh", "-c", command)) ?: return null
             val output = process.inputStream.bufferedReader().readText()
             val error = process.errorStream.bufferedReader().readText()
             process.waitFor()
@@ -71,7 +93,7 @@ object ShizukuKeepaliveHelper {
 
         // 方案1：cmd deviceidle（标准路径）
         try {
-            val proc = Shizuku.newProcess(arrayOf("cmd", "deviceidle", "whitelist", "+$pkg"), null, null)
+            val proc = shizukuExec(arrayOf("cmd", "deviceidle", "whitelist", "+$pkg")) ?: throw Exception("process null")
             val out = proc.inputStream.bufferedReader().readText()
             val code = proc.waitFor()
             Log.d(TAG, "cmd deviceidle exit=$code, out=$out")
@@ -84,7 +106,7 @@ object ShizukuKeepaliveHelper {
 
         // 方案2：dumpsys deviceidle（兼容性更好）
         return try {
-            val proc = Shizuku.newProcess(arrayOf("dumpsys", "deviceidle", "whitelist", "+$pkg"), null, null)
+            val proc = shizukuExec(arrayOf("dumpsys", "deviceidle", "whitelist", "+$pkg")) ?: throw Exception("process null")
             val out = proc.inputStream.bufferedReader().readText()
             proc.waitFor()
             Log.d(TAG, "dumpsys deviceidle out=$out")
@@ -109,7 +131,7 @@ object ShizukuKeepaliveHelper {
 
         // 2. 取消 inactive 标记（Android 9+）
         try {
-            val proc = Shizuku.newProcess(arrayOf("am", "set-inactive", pkg, "false"), null, null)
+            val proc = shizukuExec(arrayOf("am", "set-inactive", pkg, "false")) ?: throw Exception("process null")
             val out = proc.inputStream.bufferedReader().readText()
             proc.waitFor()
             sb.appendLine("set-inactive: ${out.ifBlank { "ok" }}")
@@ -119,7 +141,7 @@ object ShizukuKeepaliveHelper {
 
         // 3. 触发前台服务保活（通知 AMS 此包活跃）
         try {
-            val proc = Shizuku.newProcess(arrayOf("am", "broadcast", "-a", "android.intent.action.PACKAGE_CHANGED", "-p", pkg), null, null)
+            val proc = shizukuExec(arrayOf("am", "broadcast", "-a", "android.intent.action.PACKAGE_CHANGED", "-p", pkg)) ?: throw Exception("process null")
             val out = proc.inputStream.bufferedReader().readText()
             proc.waitFor()
             sb.appendLine("broadcast: ${out.ifBlank { "ok" }}")
@@ -127,19 +149,14 @@ object ShizukuKeepaliveHelper {
             sb.appendLine("broadcast: ${e.message}")
         }
 
-        Log.i(TAG, "Keepalive cycle:\n$sb")
+        Log.i(TAG, "Keepalive cycle result:\n$sb")
         return sb.toString()
     }
 
     /**
-     * 一键完成全部 Shizuku 保活操作
+     * 执行所有保活操作（一次性，供外部按钮调用）
      */
     fun executeAll(context: Context): String {
-        val sb = StringBuilder()
-        sb.appendLine("Shizuku: ${if (isShizukuAvailable()) "可用" else "不可用"}")
-        sb.appendLine("授权: ${if (isPermissionGranted()) "已授权" else "未授权"}")
-        sb.appendLine("---")
-        sb.append(executeKeepaliveCycle(context))
-        return sb.toString()
+        return executeKeepaliveCycle(context)
     }
 }
